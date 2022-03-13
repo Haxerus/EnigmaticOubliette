@@ -6,7 +6,6 @@ export var speed = 80
 signal move_finished
 
 func _ready():
-	#$PlayerCamera.zoom = Vector2(0.25, 0.25)
 	$PlayerCamera.make_current()
 
 func _process(delta):

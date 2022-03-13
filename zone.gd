@@ -83,10 +83,15 @@ func _process(delta):
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_LEFT and event.pressed:
-			var tile_pos = $Map.world_to_map(get_global_mouse_position())
+			var local_pos = $Map.to_local(get_global_mouse_position())
+			var tile_pos = $Map.world_to_map(local_pos)
 			var player_pos = $Map.world_to_map($Player.position)
 			
-			var target_id = tile_pos.x + tile_pos.y * map_size.x
-			var player_id = player_pos.x + player_pos.y * map_size.x
-			
-			move_player_path(nav_map.get_id_path(player_id, target_id))
+			if $Map.get_cellv(tile_pos) == 0 and $Player.target == null:
+				var target_id = tile_pos.x + tile_pos.y * map_size.x
+				var player_id = player_pos.x + player_pos.y * map_size.x
+				
+				print(local_pos)
+				print(target_id)
+				
+				move_player_path(nav_map.get_id_path(player_id, target_id))
