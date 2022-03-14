@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/gengar.png-ec423c7207f108860b2af31faf214d6e.stex"
+path="res://.import/highlight-tile.png-9c89cf21f4274b4ab26699d632c4c63f.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/gengar.png"
-dest_files=[ "res://.import/gengar.png-ec423c7207f108860b2af31faf214d6e.stex" ]
+source_file="res://highlight-tile.png"
+dest_files=[ "res://.import/highlight-tile.png-9c89cf21f4274b4ab26699d632c4c63f.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=true
+flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

@@ -78,6 +78,13 @@ func _process(delta):
 	if Input.is_action_just_pressed("ui_accept"): 
 		generate_map()
 		random_spawn()
+	
+	var local_pos = $Map.to_local(get_global_mouse_position())
+	var tile_pos = $Map.world_to_map(local_pos)
+	
+	if $Map.get_cellv(tile_pos) == 0:
+		var new_pos = $Map.map_to_world(tile_pos) + $Map.cell_size / 2
+		$HoveredTile.position = new_pos
 
 
 func _unhandled_input(event):
