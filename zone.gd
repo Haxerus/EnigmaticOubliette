@@ -85,6 +85,9 @@ func _process(delta):
 	if $Map.get_cellv(tile_pos) == 0:
 		var new_pos = $Map.map_to_world(tile_pos) + $Map.cell_size / 2
 		$HoveredTile.position = new_pos
+		$HoveredTile.visible = true
+	else:
+		$HoveredTile.visible = false
 
 
 func _unhandled_input(event):
