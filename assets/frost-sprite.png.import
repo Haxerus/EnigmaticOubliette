@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/simple-tileset.png-0d04fa768106271a9fb9648f7be608b9.stex"
+path="res://.import/frost-sprite.png-68aec96f147cfc9385a2152e67afa4b8.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/simple-tileset.png"
-dest_files=[ "res://.import/simple-tileset.png-0d04fa768106271a9fb9648f7be608b9.stex" ]
+source_file="res://assets/frost-sprite.png"
+dest_files=[ "res://.import/frost-sprite.png-68aec96f147cfc9385a2152e67afa4b8.stex" ]
 
 [params]
 

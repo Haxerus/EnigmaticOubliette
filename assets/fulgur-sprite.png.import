@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/highlight-tile.png-9c89cf21f4274b4ab26699d632c4c63f.stex"
+path="res://.import/fulgur-sprite.png-47a29ff3857b28d94c2ec0430f0f2da8.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://highlight-tile.png"
-dest_files=[ "res://.import/highlight-tile.png-9c89cf21f4274b4ab26699d632c4c63f.stex" ]
+source_file="res://assets/fulgur-sprite.png"
+dest_files=[ "res://.import/fulgur-sprite.png-47a29ff3857b28d94c2ec0430f0f2da8.stex" ]
 
 [params]
 
