@@ -21,7 +21,6 @@ _global_script_class_icons={
 [application]
 
 config/name="Mystery Dungeon"
-run/main_scene="res://game.tscn"
 config/icon="res://icon.png"
 
 [display]

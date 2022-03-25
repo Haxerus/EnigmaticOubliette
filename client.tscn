@@ -1,6 +1,25 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://client.gd" type="Script" id=1]
+[ext_resource path="res://assets/flame-sprite.png" type="Texture" id=2]
+[ext_resource path="res://assets/frost-sprite.png" type="Texture" id=3]
+[ext_resource path="res://assets/fulgur-sprite.png" type="Texture" id=4]
+[ext_resource path="res://player.tscn" type="PackedScene" id=5]
 
 [node name="Client" type="Node"]
 script = ExtResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 53, 21 )
+texture = ExtResource( 4 )
+
+[node name="Sprite2" type="Sprite" parent="."]
+position = Vector2( 68, 21 )
+texture = ExtResource( 2 )
+
+[node name="Sprite3" type="Sprite" parent="."]
+position = Vector2( 83, 21 )
+texture = ExtResource( 3 )
+
+[node name="Player" parent="." instance=ExtResource( 5 )]
+position = Vector2( 104, 20 )
