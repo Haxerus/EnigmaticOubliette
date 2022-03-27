@@ -1,3 +1,4 @@
 extends Node
 
-var movement = 2
+var move_range = 2
+var attack_range = 1

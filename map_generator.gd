@@ -2,11 +2,10 @@ extends Reference
 
 class_name MapGenerator
 
-var random = null
+var random = RandomNumberGenerator.new()
 
 func _init():
-	random = RandomNumberGenerator.new()
-
+	random.randomize()
 
 func generate_map(min_size, max_size, map):
 	var size_x = random.randi_range(min_size.x, max_size.x)

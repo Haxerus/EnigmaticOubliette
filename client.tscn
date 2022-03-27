@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://client.gd" type="Script" id=1]
 [ext_resource path="res://player_stats.gd" type="Script" id=2]
@@ -9,7 +9,6 @@
 [ext_resource path="res://assets/go_button.png" type="Texture" id=7]
 [ext_resource path="res://ui_buttons.gd" type="Script" id=8]
 [ext_resource path="res://assets/flame-sprite.png" type="Texture" id=9]
-[ext_resource path="res://zone.tscn" type="PackedScene" id=10]
 
 [sub_resource type="InputEventAction" id=3]
 action = "action_move"
@@ -112,8 +111,6 @@ text = "attack (z)"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Zone" parent="." instance=ExtResource( 10 )]
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 88, 56 )

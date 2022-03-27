@@ -24,6 +24,10 @@ config/name="Mystery Dungeon"
 run/main_scene="res://server.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Utils="*res://utils.gd"
+
 [display]
 
 window/size/width=320
