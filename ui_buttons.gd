@@ -4,7 +4,6 @@ enum {NEUTRAL, ATTACK, MOVE}
 
 func _ready():
 	pass
-	#connect("input_state_changed", self, "_on_input_state_changed")
 
 func _on_input_state_changed(state):
 	match state:
