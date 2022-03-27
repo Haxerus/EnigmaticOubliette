@@ -1,0 +1,96 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://custom_theme.tres" type="Theme" id=1]
+[ext_resource path="res://assets/bg.png" type="Texture" id=2]
+[ext_resource path="res://assets/lmao.png" type="Texture" id=3]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0, 0, 0, 0.501961 )
+
+[node name="Lobby" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 320.0
+margin_bottom = 180.0
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 6
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TitleImage" type="TextureRect" parent="."]
+visible = false
+anchor_left = 0.483
+anchor_right = 0.483
+margin_left = -52.56
+margin_top = 1.0
+margin_right = 56.44
+margin_bottom = 80.0
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="."]
+anchor_left = 0.48
+anchor_right = 0.48
+margin_left = -71.6
+margin_top = 14.0
+margin_right = 71.4
+margin_bottom = 28.0
+theme = ExtResource( 1 )
+text = "risk of exile: Mystery dungeon"
+
+[node name="Connect" type="Panel" parent="."]
+anchor_left = 0.484
+anchor_top = 0.5
+anchor_right = 0.484
+anchor_bottom = 0.5
+margin_left = -45.88
+margin_top = -44.0
+margin_right = 46.12
+margin_bottom = 44.0
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="LineEdit" parent="Connect"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -39.0
+margin_top = 5.0
+margin_right = 39.0
+margin_bottom = 26.0
+theme = ExtResource( 1 )
+placeholder_text = "name"
+
+[node name="IPAddress" type="LineEdit" parent="Connect"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -39.0
+margin_top = 31.0
+margin_right = 39.0
+margin_bottom = 52.0
+theme = ExtResource( 1 )
+placeholder_text = "ip address"
+
+[node name="Join" type="Button" parent="Connect"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -15.0
+margin_top = -25.0
+margin_right = 16.0
+margin_bottom = -5.0
+theme = ExtResource( 1 )
+text = "join"
