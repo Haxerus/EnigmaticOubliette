@@ -10,7 +10,7 @@ func _init():
 func generate_map(min_size, max_size, map):
 	var size_x = random.randi_range(min_size.x, max_size.x)
 	var size_y = random.randi_range(min_size.y, max_size.y)
-	map.map_size = Vector2(size_x, size_y)
+	map.size = Vector2(size_x, size_y)
 	
 	map.clear()
 	
