@@ -1,18 +1,13 @@
 extends Sprite
 
-var player_name = "name"
 var tile = Vector2()
 
-func move_to_tile(target_tile):
-	var target = target_tile * 16 + Vector2(8, 8)
-	_move_to(target)
+signal player_move_complete
 
 func _ready():
-	$PlayerCamera.make_current()
-	$Name.text = player_name
+	$Camera.make_current()
 
 func _move_to(target):
-	print(position.direction_to(target))
 	match position.direction_to(target):
 		Vector2(0, 1):
 			frame = 0
@@ -24,10 +19,20 @@ func _move_to(target):
 			frame = 3
 	$Tween.interpolate_property(self, "position", position, target, 0.25)
 	$Tween.start()
+	
+func _move_to_tile(target_tile):
+	var target = target_tile * 16 + Vector2(8, 8)
+	_move_to(target)
+	
+func move_path(tile_path):
+	for t in tile_path:
+		_move_to_tile(t)
+		yield($Tween, "tween_completed")
+	emit_signal("player_move_complete")
 
 func _process(_delta):
 	tile.x = floor(position.x / 16)
 	tile.y = floor(position.y / 16)
 
 func get_tid(width):
-	return tile.x + tile.y * width
+	return Utils.tile_id(tile, width)

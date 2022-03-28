@@ -9,20 +9,21 @@ texture = ExtResource( 1 )
 hframes = 4
 script = ExtResource( 3 )
 
-[node name="PlayerCamera" type="Camera2D" parent="."]
-
-[node name="Name" type="Label" parent="."]
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -17.0
+[node name="Label" type="Label" parent="."]
+visible = false
+margin_left = -4.0
 margin_top = -17.0
-margin_right = 4.0
+margin_right = 5.0
 margin_bottom = -6.0
-grow_horizontal = 2
 theme = ExtResource( 2 )
-text = "name"
+text = "p1"
+align = 1
+valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Camera" type="Camera2D" parent="."]
+zoom = Vector2( 0.25, 0.25 )
 
 [node name="Tween" type="Tween" parent="."]

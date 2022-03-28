@@ -1,6 +1,6 @@
 extends Control
 
-enum {NEUTRAL, ATTACK, MOVE}
+enum {NEUTRAL, ATTACK, MOVE, LOCKED}
 
 func _ready():
 	pass
@@ -9,11 +9,14 @@ func _on_input_state_changed(state):
 	match state:
 		NEUTRAL:
 			$AttackButton.disabled = false
-			$AttackButton.pressed = false
+			$AttackButton.set_pressed_no_signal(false)
 			
 			$MoveButton.disabled = false
-			$MoveButton.pressed = false
+			$MoveButton.set_pressed_no_signal(false)
 		ATTACK:
-			$MoveButton.disabled = true
+			$MoveButton.set_pressed_no_signal(false)
 		MOVE:
+			$AttackButton.set_pressed_no_signal(false)
+		LOCKED:
 			$AttackButton.disabled = true
+			$MoveButton.disabled = true

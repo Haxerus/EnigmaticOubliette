@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://custom_theme.tres" type="Theme" id=1]
 [ext_resource path="res://assets/bg.png" type="Texture" id=2]
 [ext_resource path="res://assets/lmao.png" type="Texture" id=3]
+[ext_resource path="res://lobby.gd" type="Script" id=4]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0, 0, 0, 0.501961 )
@@ -10,13 +11,14 @@ bg_color = Color( 0, 0, 0, 0.501961 )
 [node name="Lobby" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+script = ExtResource( 4 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Background" type="TextureRect" parent="."]
-margin_right = 320.0
-margin_bottom = 180.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 texture = ExtResource( 2 )
 expand = true
 stretch_mode = 6
@@ -25,21 +27,19 @@ __meta__ = {
 }
 
 [node name="TitleImage" type="TextureRect" parent="."]
-visible = false
-anchor_left = 0.483
-anchor_right = 0.483
-margin_left = -52.56
-margin_top = 1.0
-margin_right = 56.44
-margin_bottom = 80.0
+anchor_left = 0.354688
+anchor_top = 0.0347222
+anchor_right = 0.645312
+anchor_bottom = 0.418056
 texture = ExtResource( 3 )
 expand = true
 stretch_mode = 5
 __meta__ = {
-"_edit_use_anchors_": false
+"_edit_use_anchors_": true
 }
 
 [node name="Title" type="Label" parent="."]
+visible = false
 anchor_left = 0.48
 anchor_right = 0.48
 margin_left = -71.6
@@ -50,47 +50,68 @@ theme = ExtResource( 1 )
 text = "risk of exile: Mystery dungeon"
 
 [node name="Connect" type="Panel" parent="."]
-anchor_left = 0.484
+anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 0.484
+anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -45.88
-margin_top = -44.0
-margin_right = 46.12
-margin_bottom = 44.0
+margin_left = -105.0
+margin_top = -40.5
+margin_right = 105.0
+margin_bottom = 198.5
 custom_styles/panel = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Name" type="LineEdit" parent="Connect"]
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -39.0
-margin_top = 5.0
-margin_right = 39.0
-margin_bottom = 26.0
+anchor_left = 0.0356019
+anchor_top = 0.0627615
+anchor_right = 0.940364
+anchor_bottom = 0.23431
+margin_right = -86.0938
 theme = ExtResource( 1 )
 placeholder_text = "name"
+__meta__ = {
+"_edit_use_anchors_": true
+}
 
 [node name="IPAddress" type="LineEdit" parent="Connect"]
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -39.0
-margin_top = 31.0
-margin_right = 39.0
-margin_bottom = 52.0
+anchor_left = 0.0378391
+anchor_top = 0.280335
+anchor_right = 0.942601
+anchor_bottom = 0.451883
+margin_right = -86.0938
 theme = ExtResource( 1 )
 placeholder_text = "ip address"
+__meta__ = {
+"_edit_use_anchors_": true
+}
 
 [node name="Join" type="Button" parent="Connect"]
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-margin_left = -15.0
-margin_top = -25.0
-margin_right = 16.0
-margin_bottom = -5.0
+anchor_left = 0.335714
+anchor_top = 0.769874
+anchor_right = 0.664286
+anchor_bottom = 0.924686
 theme = ExtResource( 1 )
 text = "join"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="ErrorLabel" type="Label" parent="Connect"]
+anchor_left = 0.5
+anchor_top = 0.621
+anchor_right = 0.5
+anchor_bottom = 0.621
+margin_left = -42.5
+margin_top = -6.91901
+margin_right = 42.5
+margin_bottom = 7.08099
+grow_horizontal = 2
+custom_colors/font_color = Color( 1, 0.364706, 0.364706, 1 )
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="Connect/Join" to="." method="_on_join_pressed"]
