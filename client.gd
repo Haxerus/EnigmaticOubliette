@@ -7,29 +7,13 @@ var input_state = NEUTRAL
 var overlay_tiles = []
 var action = {}
 
-var map
-var player
+onready var map = get_node("Zone/Map")
+onready var player = get_node("Zone/Players/Player")
 
 signal input_state_changed(state)
 
 func _ready():
-	var zone = load("res://zone.tscn").instance()
-	var map_gen =  MapGenerator.new()
-	map = zone.get_node("Map")
-	
-	map_gen.generate_map(Vector2(5, 5), Vector2(9, 9), map)
-	map.generate_nav()
-	
-	player = load("res://player.tscn").instance()
 	player.connect("player_move_complete", self, "_on_player_move_complete")
-	
-	var spawn = Vector2()
-	spawn.x = floor(map.size.x / 2)
-	spawn.y = floor(map.size.y / 2)
-	player.position = Utils.tile_to_pos(spawn)
-	zone.get_node("Players").add_child(player)
-	
-	add_child_below_node($HUDLayer, zone)
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
@@ -39,7 +23,6 @@ func _unhandled_input(event):
 			match input_state:
 				ATTACK:
 					if Utils.in_bounds(mouse_tile, map.size) and map.nav.has_point(mouse_tid):
-						print(mouse_tile)
 						var turn = ceil((Utils.tile_dist(player.tile, mouse_tile) + 1) / $PlayerStats.move_range)
 						
 						action = {
@@ -51,8 +34,7 @@ func _unhandled_input(event):
 						$Zone/HighlightTile/Turn.text = str(turn)
 						$Zone/HighlightTile.show()
 				MOVE:
-					if Utils.in_bounds(mouse_tile, map.size) and map.nav.has_point(mouse_tid):		
-						print(mouse_tile)				
+					if Utils.in_bounds(mouse_tile, map.size) and map.nav.has_point(mouse_tid):
 						var turn = ceil(Utils.tile_dist(player.tile, mouse_tile) / $PlayerStats.move_range)
 						
 						action = {
@@ -66,7 +48,6 @@ func _unhandled_input(event):
 
 func _process(_delta):
 	#var mouse_tile = Utils.pos_to_tile($Zone.get_global_mouse_position())
-	
 	if action.empty():
 		$HUDLayer/HUD/EndTurnButton.disabled = true
 	else:
@@ -80,7 +61,7 @@ func _process(_delta):
 		_:
 			$Zone/TileOverlay.clear()
 			$Zone/HighlightTile.hide()
-			action.clear()		
+			action.clear()
 
 func _on_MoveButton_toggled(button_pressed):
 	if button_pressed:

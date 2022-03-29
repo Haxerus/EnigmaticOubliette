@@ -4,8 +4,11 @@ class_name MapGenerator
 
 var random = RandomNumberGenerator.new()
 
-func _init():
-	random.randomize()
+func _init(gen_seed=null):
+	if gen_seed:
+		random.set_seed(gen_seed)
+	else:
+		random.randomize()
 
 func generate_map(min_size, max_size, map):
 	var size_x = random.randi_range(min_size.x, max_size.x)

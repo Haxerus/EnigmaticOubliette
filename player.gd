@@ -1,5 +1,6 @@
 extends Sprite
 
+export var anim_speed = 1 / 8.0
 var tile = Vector2()
 
 signal player_move_complete
@@ -17,7 +18,7 @@ func _move_to(target):
 			frame = 2
 		Vector2(1, 0):
 			frame = 3
-	$Tween.interpolate_property(self, "position", position, target, 0.25)
+	$Tween.interpolate_property(self, "position", position, target, anim_speed)
 	$Tween.start()
 	
 func _move_to_tile(target_tile):

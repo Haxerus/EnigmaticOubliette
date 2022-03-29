@@ -3,9 +3,13 @@ extends Control
 func _ready():
 	if "--server" in OS.get_cmdline_args():
 		get_tree().change_scene("res://server.tscn")
-	else:
-		show()
-
+		return
+	
+	show()
+	hash
+	
+	Multiplayer.connect("connection_succeeded", self, "_on_connection_succeeded")
+	Multiplayer.connect("connection_failed", self, "_on_connection_failed")
 
 func _on_join_pressed():
 	if $Connect/Name.text == "":
@@ -22,3 +26,11 @@ func _on_join_pressed():
 
 	var player_name = $Connect/Name.text
 	Multiplayer.join_game(ip, player_name)
+
+func _on_connection_succeeded():
+	hide()
+	$Connect/ErrorLabel.set_text("Connected to server.")
+
+func _on_connection_failed():
+	$Connect/Join.disabled = false
+	$Connect/ErrorLabel.set_text("Connection failed.")
