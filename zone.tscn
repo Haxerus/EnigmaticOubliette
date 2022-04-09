@@ -32,6 +32,7 @@ cell_tile_origin = 1
 format = 1
 
 [node name="HighlightTile" type="Sprite" parent="."]
+visible = false
 texture = ExtResource( 4 )
 
 [node name="Turn" type="Label" parent="HighlightTile"]

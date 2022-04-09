@@ -23,7 +23,7 @@ func _unhandled_input(event):
 			match input_state:
 				ATTACK:
 					if Utils.in_bounds(mouse_tile, map.size) and map.nav.has_point(mouse_tid):
-						var turn = ceil((Utils.tile_dist(player.tile, mouse_tile) + 1) / $PlayerStats.move_range)
+						var turn = ceil((Utils.tile_dist(player.tile, mouse_tile) + 1) / 2)
 						
 						action = {
 							"type": "attack",
@@ -35,7 +35,7 @@ func _unhandled_input(event):
 						$Zone/HighlightTile.show()
 				MOVE:
 					if Utils.in_bounds(mouse_tile, map.size) and map.nav.has_point(mouse_tid):
-						var turn = ceil(Utils.tile_dist(player.tile, mouse_tile) / $PlayerStats.move_range)
+						var turn = ceil(Utils.tile_dist(player.tile, mouse_tile) / 2)
 						
 						action = {
 							"type": "move",
@@ -47,7 +47,6 @@ func _unhandled_input(event):
 						$Zone/HighlightTile.show()
 
 func _process(_delta):
-	#var mouse_tile = Utils.pos_to_tile($Zone.get_global_mouse_position())
 	if action.empty():
 		$HUDLayer/HUD/EndTurnButton.disabled = true
 	else:
@@ -72,7 +71,7 @@ func _on_MoveButton_toggled(button_pressed):
 		action.clear()
 		
 		$Zone/TileOverlay.clear()
-		_update_overlay_tiles($PlayerStats.move_range)
+		_update_overlay_tiles(2)
 		
 		for t in overlay_tiles:
 			$Zone/TileOverlay.set_cellv(map.nav.get_point_position(t), 1)
@@ -89,7 +88,7 @@ func _on_AttackButton_toggled(button_pressed):
 		action.clear()
 		
 		$Zone/TileOverlay.clear()
-		_update_overlay_tiles($PlayerStats.attack_range)
+		_update_overlay_tiles(2)
 		
 		for t in overlay_tiles:
 			$Zone/TileOverlay.set_cellv(map.nav.get_point_position(t), 2)

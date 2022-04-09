@@ -1,13 +1,6 @@
 extends Control
 
 func _ready():
-	if "--server" in OS.get_cmdline_args():
-		get_tree().change_scene("res://server.tscn")
-		return
-	
-	show()
-	hash
-	
 	Multiplayer.connect("connection_succeeded", self, "_on_connection_succeeded")
 	Multiplayer.connect("connection_failed", self, "_on_connection_failed")
 
@@ -25,7 +18,7 @@ func _on_join_pressed():
 	$Connect/Join.disabled = true
 
 	var player_name = $Connect/Name.text
-	Multiplayer.join_game(ip, player_name)
+	Multiplayer.join_game(ip)
 
 func _on_connection_succeeded():
 	hide()

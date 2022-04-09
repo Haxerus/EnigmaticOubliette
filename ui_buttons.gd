@@ -2,9 +2,6 @@ extends Control
 
 enum {NEUTRAL, ATTACK, MOVE, LOCKED}
 
-func _ready():
-	pass
-
 func _on_input_state_changed(state):
 	match state:
 		NEUTRAL:
