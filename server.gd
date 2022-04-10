@@ -38,7 +38,7 @@ func _on_received_action(id, action):
 			path.remove(0)
 			
 			$PlayerData.update_attribute(id, "position", Utils.id_tile(action["target"], $Zones/Hub/Map.size.x))
-			Multiplayer.send_action_result(id, {"path": path})
+			Multiplayer.send_action_result(id, {"path": path, "id": id})
 			
 		{"type": "attack", ..}:
 			ready.append(id)

@@ -6,7 +6,8 @@ var tile = Vector2()
 signal player_move_complete
 
 func _ready():
-	$Camera.make_current()
+	pass
+	#$Camera.make_current()
 
 func _move_to(target):
 	match position.direction_to(target):

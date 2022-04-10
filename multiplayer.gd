@@ -68,8 +68,8 @@ remote func player_action(action):
 # TODO: Make this function call all clients and send the results of the turn
 func send_action_result(id, result):
 	var player_data = get_node("/root/Server/PlayerData")
-	rpc_id(id, "sync_client", {"type": "player_data", "data": player_data.get_data(id)})
-	rpc_id(id, "action_results", result)
+	rpc("sync_client", {"type": "player_data", "data": player_data.get_all_data()})
+	rpc("action_results", result)
 
 # Client Side
 

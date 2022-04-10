@@ -15,6 +15,7 @@ var action = {}
 signal input_state_changed(state)
 
 func _ready():
+	player.get_node("Camera").make_current()
 	$Zone/Players.add_child(player)
 	$PlayerData.register_player(pid)
 	
@@ -125,19 +126,26 @@ func _on_player_move_complete():
 # Multiplayer Linked Functions
 func _on_action_results(results):
 	match results:
-		{"path": var path, ..}:
-			_execute_player_path(path)
+		{"path": var path, "id": var id, ..}:
+			_execute_player_path(id, path)
 
 func _on_force_update():
 	player.set_tile_position($PlayerData.get_attribute(pid, "position"))
+	
 
 # Receives ALL player data
 func _on_player_sync(data):
-#	match data:
-#		{""}
-#		{"position": var pos, ..}:
-#			$PlayerData.update_attribute(pid, "position", pos)
-	print(data)
+	for id in data:
+		if int(id) == int(pid):
+			match data[id]:
+				{"position": var pos, ..}:
+					$PlayerData.update_attribute(pid, "position", pos)
+		else:
+			if not has_node("Zone/Players/" + str(id)):
+				var new_player = preload("res://player.tscn").instance()
+				new_player.set_name(str(id))
+				new_player.set_tile_position(data[id]["position"])
+				$Zone/Players.add_child(new_player)
 	
 func _on_map_sync(data):
 	print(data)
@@ -150,8 +158,13 @@ func _update_overlay_tiles(dist):
 	var player_tid = player.tile.x + player.tile.y * map.size.x
 	overlay_tiles = Utils.bfs_range(map.nav, player_tid, dist)
 
-func _execute_player_path(path):
+func _execute_player_path(id, path):
 	var tile_path = []
 	for p in path:
 		tile_path.append(map.nav.get_point_position(p))
-	player.move_path(tile_path)
+	
+	if int(id) == int(pid):
+		player.move_path(tile_path)
+	else:
+		var remote_player = get_node("Zone/Players/"+str(id))
+		remote_player.move_path(tile_path)
