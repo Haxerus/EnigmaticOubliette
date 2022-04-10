@@ -56,7 +56,7 @@ func host_game():
 	
 func join_game(ip):
 	peer = NetworkedMultiplayerENet.new()
-	peer.create_client(ip, DEFAULT_PORT)
+	peer.create_client(ip, DEFAULT_PORT, 0, 0, DEFAULT_PORT)
 	get_tree().set_network_peer(peer)
 	
 func try_upnp():
