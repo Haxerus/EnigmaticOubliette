@@ -1,6 +1,6 @@
 extends Node
 
-const DEFAULT_PORT = 3840
+const DEFAULT_PORT = 38400
 const MAX_PEERS = 8
 
 var peer
@@ -110,12 +110,9 @@ func _upnp_setup(server_port):
 		push_error(str(err))
 		emit_signal("upnp_completed", err)
 		return
-	
-	print(err)
 
 	if upnp.get_gateway() and upnp.get_gateway().is_valid_gateway():
 		upnp.add_port_mapping(server_port, server_port, ProjectSettings.get_setting("application/config/name"), "UDP")
-		upnp.add_port_mapping(server_port, server_port, ProjectSettings.get_setting("application/config/name"), "TCP")
 		emit_signal("upnp_completed", OK)
 	
 func _ready():
