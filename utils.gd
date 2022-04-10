@@ -15,9 +15,6 @@ static func tile_dist(t1, t2):
 	
 static func tile_id(tile, map_width):
 	return tile.x + tile.y * map_width
-	
-static func in_bounds(tile, map_size):
-	return tile.x in range(0, map_size.x) and tile.y in range(0, map_size.y)
 
 static func bfs_range(graph, start, max_dist):
 	var visited = []

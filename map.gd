@@ -4,6 +4,8 @@ var size = Vector2()
 var nav = AStar2D.new()
 
 func generate_nav():
+	nav.clear()
+	
 	for i in range(size.x):
 		for j in range(size.y):
 			if get_cell(i, j) != 1:
@@ -16,6 +18,9 @@ func generate_nav():
 			_connect_points(id, id - 1) # LEFT
 			_connect_points(id, id + size.x) # DOWN
 			_connect_points(id, id + 1) # RIGHT
+
+func in_bounds(tile):
+	return tile.x in range(0, size.x) and tile.y in range(0, size.y)
 
 func _connect_points(p1, p2):
 	if (

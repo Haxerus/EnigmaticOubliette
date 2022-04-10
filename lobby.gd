@@ -1,5 +1,7 @@
 extends Control
 
+var client = preload("res://client.tscn").instance()
+
 func _ready():
 	Multiplayer.connect("connection_succeeded", self, "_on_connection_succeeded")
 	Multiplayer.connect("connection_failed", self, "_on_connection_failed")
@@ -17,11 +19,12 @@ func _on_join_pressed():
 	$Connect/ErrorLabel.text = ""
 	$Connect/Join.disabled = true
 
-	var player_name = $Connect/Name.text
+	var _player_name = $Connect/Name.text
 	Multiplayer.join_game(ip)
 
 func _on_connection_succeeded():
 	hide()
+	get_tree().get_root().add_child(client)
 	$Connect/ErrorLabel.set_text("Connected to server.")
 
 func _on_connection_failed():

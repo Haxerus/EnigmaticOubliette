@@ -9,10 +9,20 @@ signal connection_succeeded
 signal connection_failed
 signal network_error(error)
 
+signal map_sync(data)
+signal player_sync(data)
+
 # Callbacks from SceneTree
 
 func _player_connected(id):
-	pass
+	if get_tree().is_network_server():
+		var server = get_node("/root/Server")
+		var player_data = get_node("/root/Server/PlayerData")
+		
+		server.add_player(id)
+		
+		rpc_id(id, "sync_map", {})
+		rpc_id(id, "sync_player", player_data.get_data(id))
 	
 func _player_disconnected(id):
 	pass
@@ -39,7 +49,19 @@ func join_game(ip):
 	get_tree().set_network_peer(peer)
 	
 # Game specific network functions
-	
+
+# Server Side
+
+# Client Side
+
+remote func sync_map(data):
+	if not get_tree().is_network_server():
+		emit_signal("map_sync", data)
+
+remote func sync_player(data):
+	if not get_tree().is_network_server():
+		emit_signal("player_sync", data)
+
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")

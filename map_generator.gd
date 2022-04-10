@@ -10,22 +10,26 @@ func _init(gen_seed=null):
 	else:
 		random.randomize()
 
-func generate_map(min_size, max_size, map):
-	var size_x = random.randi_range(min_size.x, max_size.x)
-	var size_y = random.randi_range(min_size.y, max_size.y)
-	map.size = Vector2(size_x, size_y)
-	
+func generate_map(map, settings):
 	map.clear()
 	
-	for x in range(size_x):
-		for y in range(size_y):
+	var size = Vector2(20, 20)
+	
+	match settings:
+		{"size": var _size, ..}:
+			size = _size
+	
+	for x in range(size.x):
+		for y in range(size.y):
 			var tile_id = 0
 			
-			if x == 0 or x == size_x - 1:
+			if x == 0 or x == size.x - 1:
 				tile_id = 1
 			
-			if y == 0 or y == size_y - 1:
+			if y == 0 or y == size.y - 1:
 				tile_id = 1
 			
 			map.set_cellv(Vector2(x, y), tile_id)
+	
+	map.generate_nav()
 

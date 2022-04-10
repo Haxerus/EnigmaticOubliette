@@ -37,3 +37,6 @@ func _process(_delta):
 
 func get_tid(width):
 	return Utils.tile_id(tile, width)
+
+func set_tile_position(tpos):
+	position = Utils.tile_to_pos(tpos)
