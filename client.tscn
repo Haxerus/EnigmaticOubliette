@@ -118,11 +118,34 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="LoadingScreen" type="ColorRect" parent="HUDLayer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color( 0.0784314, 0.0784314, 0.0784314, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="HUDLayer/LoadingScreen"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -297.5
+margin_top = -15.5
+margin_right = 297.5
+margin_bottom = 15.5
+theme = ExtResource( 6 )
+text = "Sky Meadow Tower Isle North-South F69420"
+
 [node name="Zone" parent="." instance=ExtResource( 2 )]
 
 [node name="PlayerData" type="Node" parent="."]
 script = ExtResource( 3 )
 
+[connection signal="input_state_changed" from="." to="HUDLayer/HUD/UIButtons" method="_on_input_state_changed"]
 [connection signal="pressed" from="HUDLayer/HUD/EndTurnButton" to="." method="_on_EndTurnButton_pressed"]
 [connection signal="toggled" from="HUDLayer/HUD/UIButtons/MoveButton" to="." method="_on_MoveButton_toggled"]
 [connection signal="toggled" from="HUDLayer/HUD/UIButtons/AttackButton" to="." method="_on_AttackButton_toggled"]

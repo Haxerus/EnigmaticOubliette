@@ -4,7 +4,9 @@ var data = {}
 
 func register_player(id):
 	data[id] = {
-		"position": Vector2(0, 0)
+		"position": Vector2(0, 0),
+		"move_range": 2,
+		"attack_range": 1,
 	}
 
 func update_attribute(id, attr, value):
@@ -17,3 +19,6 @@ func get_attribute(id, attr):
 
 func get_data(id):
 	return data[id]
+
+func get_all_data():
+	return data

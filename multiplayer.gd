@@ -3,14 +3,18 @@ extends Node
 const DEFAULT_PORT = 3840
 const MAX_PEERS = 8
 
-var peer = null
+var peer
 
 signal connection_succeeded
 signal connection_failed
 signal network_error(error)
 
+signal received_action(id, action)
+
+signal force_update
 signal map_sync(data)
 signal player_sync(data)
+signal action_results(results)
 
 # Callbacks from SceneTree
 
@@ -21,8 +25,12 @@ func _player_connected(id):
 		
 		server.add_player(id)
 		
-		rpc_id(id, "sync_map", {})
-		rpc_id(id, "sync_player", player_data.get_data(id))
+		# Sync to connecting client
+		rpc_id(id, "sync_client", {"type": "map_data", "data": {}})
+		
+		# Sync to all clients
+		rpc("sync_client", {"type": "player_data", "data": player_data.get_all_data()})
+		rpc("force_update")
 	
 func _player_disconnected(id):
 	pass
@@ -51,17 +59,45 @@ func join_game(ip):
 # Game specific network functions
 
 # Server Side
+remote func player_action(action):
+	if not get_tree().is_network_server():
+		return
+	
+	emit_signal("received_action", get_tree().get_rpc_sender_id(), action)
+
+# TODO: Make this function call all clients and send the results of the turn
+func send_action_result(id, result):
+	var player_data = get_node("/root/Server/PlayerData")
+	rpc_id(id, "sync_client", {"type": "player_data", "data": player_data.get_data(id)})
+	rpc_id(id, "action_results", result)
 
 # Client Side
 
-remote func sync_map(data):
-	if not get_tree().is_network_server():
-		emit_signal("map_sync", data)
+remote func sync_client(packet):
+	if get_tree().is_network_server():
+		return
 
-remote func sync_player(data):
-	if not get_tree().is_network_server():
-		emit_signal("player_sync", data)
+	match packet:
+		{"type": "player_data", ..}:
+			emit_signal("player_sync", packet["data"])
+		{"type": "map_data", ..}:
+			emit_signal("map_sync", packet["data"])
 
+remote func force_update():
+	if get_tree().is_network_server():
+		return
+	
+	emit_signal("force_update")
+
+remote func action_results(results):
+	if get_tree().is_network_server():
+		return
+	
+	emit_signal("action_results", results)
+
+func send_action(action):
+	rpc_id(1, "player_action", action)
+	
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")

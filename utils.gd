@@ -16,6 +16,11 @@ static func tile_dist(t1, t2):
 static func tile_id(tile, map_width):
 	return tile.x + tile.y * map_width
 
+static func id_tile(id, map_width):
+	var x = int(id) % int(map_width)
+	var y = floor(id / map_width)
+	return Vector2(x, y)
+
 static func bfs_range(graph, start, max_dist):
 	var visited = []
 	var queue = []

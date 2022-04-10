@@ -19,6 +19,8 @@ func generate_map(map, settings):
 		{"size": var _size, ..}:
 			size = _size
 	
+	map.size = size
+	
 	for x in range(size.x):
 		for y in range(size.y):
 			var tile_id = 0
