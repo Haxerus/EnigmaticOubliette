@@ -148,7 +148,6 @@ func _on_player_sync(data):
 				$Zone/Players.add_child(new_player)
 	
 func _on_map_sync(data):
-	print(data)
 	var map_gen = MapGenerator.new()
 	map_gen.generate_map(map, data)
 	

@@ -37,6 +37,9 @@ func _player_connected(id):
 	
 func _player_disconnected(id):
 	print("Peer ", id, " disconnected")
+	if get_tree().is_network_server():
+		var server = get_node("/root/Server")
+		server.remove_player(id)
 
 func _connected_ok():
 	emit_signal("connection_succeeded")
@@ -128,6 +131,8 @@ func _ready():
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
 
 func _exit_tree():
+	if peer:
+		peer.close_connection()
 	# Wait for thread finish here to handle game exit while the thread is running.
 	if thread.is_active():
 		thread.wait_to_finish()

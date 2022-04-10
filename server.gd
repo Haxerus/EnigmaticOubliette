@@ -31,6 +31,14 @@ func add_player(id):
 	
 	$Zones/Hub.add_child(player)
 
+func remove_player(id):
+	var player = get_node_or_null("Zones/Hub/Players/"+str(id))
+	if player == null:
+		return
+	
+	player.queue_free()
+	$PlayerData.unregister_player(id)
+
 func _on_received_action(id, action):
 	match action:
 		{"type": "move", ..}:
