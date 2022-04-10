@@ -4,12 +4,16 @@ var connected = []
 var ready = []
 
 func _ready():
-	Multiplayer.host_game()
+	Multiplayer.connect("upnp_completed", self, "_on_upnp_completed")
 	Multiplayer.connect("received_action", self, "_on_received_action")
 	
-	print("Generating Hub Zone")
+	print("[INFO] Starting server...")
+	
+	print("[INFO] Trying UPNP on port 38400")
+	Multiplayer.try_upnp()
+	
+	print("[INFO] Generating Hub zone...")
 	_init_hub_zone()
-	print("Server starup completed")
 
 func _process(_delta):
 	pass
@@ -19,7 +23,8 @@ func add_player(id):
 	player.name = str(id)
 	
 	$PlayerData.register_player(id)
-	connected.append(id)
+	if !connected.has(id):
+		connected.append(id)
 	
 	var spawn = Vector2(floor($Zones/Hub/Map.size.x / 2), floor($Zones/Hub/Map.size.y / 2))
 	$PlayerData.update_attribute(id, "position", spawn)
@@ -27,10 +32,10 @@ func add_player(id):
 	$Zones/Hub.add_child(player)
 
 func _on_received_action(id, action):
-	print(ready == connected)
 	match action:
 		{"type": "move", ..}:
-			ready.append(id)
+			if !ready.has(id):
+				ready.append(id)
 			var pos = $PlayerData.get_attribute(id, "position")
 			var player_tid = Utils.tile_id(pos, $Zones/Hub/Map.size.x)
 			
@@ -41,7 +46,18 @@ func _on_received_action(id, action):
 			Multiplayer.send_action_result(id, {"path": path, "id": id})
 			
 		{"type": "attack", ..}:
-			ready.append(id)
+			if !ready.has(id):
+				ready.append(id)
+
+func _on_upnp_completed(err):
+	if err == OK:
+		print("[INFO] UPNP was successful")
+	else:
+		print("[ERROR] UPNP failed with error code: ", err)
+	
+	print("[INFO] Launching host")
+	Multiplayer.host_game()
+	print("[INFO] Server startup completed")
 
 func _init_hub_zone():
 	var zone = load("res://zone.tscn").instance()

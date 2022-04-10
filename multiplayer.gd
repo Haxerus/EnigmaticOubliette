@@ -36,7 +36,7 @@ func _player_connected(id):
 		rpc("force_update")
 	
 func _player_disconnected(id):
-	pass
+	print("Peer ", id, " disconnected")
 
 func _connected_ok():
 	emit_signal("connection_succeeded")
@@ -58,6 +58,9 @@ func join_game(ip):
 	peer = NetworkedMultiplayerENet.new()
 	peer.create_client(ip, DEFAULT_PORT)
 	get_tree().set_network_peer(peer)
+	
+func try_upnp():
+	thread.start(self, "_upnp_setup", DEFAULT_PORT)
 	
 # Game specific network functions
 
@@ -112,12 +115,11 @@ func _upnp_setup(server_port):
 		return
 
 	if upnp.get_gateway() and upnp.get_gateway().is_valid_gateway():
-		upnp.add_port_mapping(server_port, server_port, ProjectSettings.get_setting("application/config/name"), "UDP")
-		emit_signal("upnp_completed", OK)
-	
+		var e = upnp.add_port_mapping(server_port, server_port, ProjectSettings.get_setting("application/config/name"), "UDP")
+		emit_signal("upnp_completed", e)
+
 func _ready():
 	thread = Thread.new()
-	thread.start(self, "_upnp_setup", DEFAULT_PORT)
 	
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
@@ -127,4 +129,5 @@ func _ready():
 
 func _exit_tree():
 	# Wait for thread finish here to handle game exit while the thread is running.
-	thread.wait_to_finish()
+	if thread.is_active():
+		thread.wait_to_finish()
