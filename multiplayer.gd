@@ -118,8 +118,9 @@ func _upnp_setup(server_port):
 		return
 
 	if upnp.get_gateway() and upnp.get_gateway().is_valid_gateway():
-		var e = upnp.add_port_mapping(server_port, server_port, ProjectSettings.get_setting("application/config/name"), "UDP")
-		emit_signal("upnp_completed", e)
+		upnp.add_port_mapping(server_port, server_port, ProjectSettings.get_setting("application/config/name"), "TCP")
+		upnp.add_port_mapping(server_port, server_port, ProjectSettings.get_setting("application/config/name"), "UDP")
+		emit_signal("upnp_completed", OK)
 
 func _ready():
 	thread = Thread.new()
