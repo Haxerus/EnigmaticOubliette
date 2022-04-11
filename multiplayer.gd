@@ -55,6 +55,7 @@ func _server_disconnected():
 func host_game():
 	peer = NetworkedMultiplayerENet.new()
 	peer.create_server(DEFAULT_PORT)
+	peer.set_dtls_enabled(true)
 	get_tree().set_network_peer(peer)
 	
 func join_game(ip):
