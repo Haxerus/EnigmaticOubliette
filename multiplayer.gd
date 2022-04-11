@@ -118,7 +118,6 @@ func _upnp_setup(server_port):
 		return
 
 	if upnp.get_gateway() and upnp.get_gateway().is_valid_gateway():
-		upnp.add_port_mapping(server_port, server_port, ProjectSettings.get_setting("application/config/name"), "TCP")
 		upnp.add_port_mapping(server_port, server_port, ProjectSettings.get_setting("application/config/name"), "UDP")
 		emit_signal("upnp_completed", OK)
 
