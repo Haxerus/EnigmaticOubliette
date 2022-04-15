@@ -10,18 +10,17 @@ hframes = 4
 script = ExtResource( 3 )
 
 [node name="Label" type="Label" parent="."]
-visible = false
-margin_left = -4.0
-margin_top = -17.0
-margin_right = 5.0
-margin_bottom = -6.0
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -12.0
+margin_top = -11.0
+margin_right = 60.0
+margin_bottom = 20.0
+rect_scale = Vector2( 0.125, 0.125 )
 theme = ExtResource( 2 )
-text = "p1"
+text = "name"
 align = 1
 valign = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Camera" type="Camera2D" parent="."]
 zoom = Vector2( 0.25, 0.25 )

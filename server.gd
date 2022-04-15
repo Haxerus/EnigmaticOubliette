@@ -3,6 +3,8 @@ extends Node
 var connected = []
 var ready = []
 
+onready var player_data = 
+
 func _ready():
 	Multiplayer.connect("upnp_completed", self, "_on_upnp_completed")
 	Multiplayer.connect("received_action", self, "_on_received_action")

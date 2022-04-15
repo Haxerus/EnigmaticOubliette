@@ -6,6 +6,7 @@ onready var pid = get_tree().get_network_unique_id()
 onready var map = get_node("Zone/Map")
 
 var player = preload("res://player.tscn").instance()
+var player_data = PlayerData.new()
 
 var input_state = NEUTRAL
 
@@ -131,7 +132,6 @@ func _on_action_results(results):
 
 func _on_force_update():
 	player.set_tile_position($PlayerData.get_attribute(pid, "position"))
-	
 
 # Receives ALL player data
 func _on_player_sync(data):

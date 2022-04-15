@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "MapGenerator",
 "language": "GDScript",
 "path": "res://map_generator.gd"
+}, {
+"base": "Reference",
+"class": "PlayerData",
+"language": "GDScript",
+"path": "res://player_data.gd"
 } ]
 _global_script_class_icons={
-"MapGenerator": ""
+"MapGenerator": "",
+"PlayerData": ""
 }
 
 [application]

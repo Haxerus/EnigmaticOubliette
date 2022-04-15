@@ -1,4 +1,6 @@
-extends Node
+extends Reference
+
+class_name PlayerData
 
 var data = {}
 

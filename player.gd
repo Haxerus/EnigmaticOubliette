@@ -7,7 +7,6 @@ signal player_move_complete
 
 func _ready():
 	pass
-	#$Camera.make_current()
 
 func _move_to(target):
 	match position.direction_to(target):
