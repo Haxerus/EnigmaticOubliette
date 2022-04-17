@@ -10,30 +10,49 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Reference",
+"class": "EnemyData",
+"language": "GDScript",
+"path": "res://scripts/server/data/enemy_data.gd"
+}, {
+"base": "Reference",
+"class": "MapData",
+"language": "GDScript",
+"path": "res://scripts/server/data/map_data.gd"
+}, {
+"base": "Reference",
 "class": "MapGenerator",
 "language": "GDScript",
-"path": "res://map_generator.gd"
+"path": "res://scripts/map_generator.gd"
 }, {
 "base": "Reference",
 "class": "PlayerData",
 "language": "GDScript",
-"path": "res://player_data.gd"
+"path": "res://scripts/server/data/player_data.gd"
+}, {
+"base": "Reference",
+"class": "ZoneData",
+"language": "GDScript",
+"path": "res://scripts/server/data/zone_data.gd"
 } ]
 _global_script_class_icons={
+"EnemyData": "",
+"MapData": "",
 "MapGenerator": "",
-"PlayerData": ""
+"PlayerData": "",
+"ZoneData": ""
 }
 
 [application]
 
 config/name="Mystery Dungeon"
-run/main_scene="res://main.tscn"
+run/main_scene="res://scenes/main.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
-Utils="*res://utils.gd"
-Multiplayer="*res://multiplayer.gd"
+Multiplayer="*res://scripts/server/multiplayer.gd"
+Utils="*res://scripts/utils.gd"
+DataDefaults="*res://scripts/data_defaults.gd"
 
 [display]
 

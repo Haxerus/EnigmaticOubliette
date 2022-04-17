@@ -3,10 +3,8 @@ extends Node
 enum {NEUTRAL, ATTACK, MOVE, LOCKED}
 
 onready var pid = get_tree().get_network_unique_id()
-onready var map = get_node("Zone/Map")
 
-var player = preload("res://player.tscn").instance()
-var player_data = PlayerData.new()
+var player = preload("res://scenes/player.tscn").instance()
 
 var input_state = NEUTRAL
 
@@ -18,14 +16,11 @@ signal input_state_changed(state)
 func _ready():
 	player.get_node("Camera").make_current()
 	$Zone/Players.add_child(player)
-	$PlayerData.register_player(pid)
+	
+	Multiplayer.connect("player_updated", self, "_on_player_updated")
+	Multiplayer.connect("zone_updated", self, "_on_zone_updated")
 	
 	player.connect("player_move_complete", self, "_on_player_move_complete")
-	
-	Multiplayer.connect("action_results", self, "_on_action_results")
-	Multiplayer.connect("map_sync", self, "_on_map_sync")
-	Multiplayer.connect("player_sync", self, "_on_player_sync")
-	Multiplayer.connect("force_update", self, "_on_force_update")
 
 func _process(_delta):
 	if action.empty():
@@ -46,30 +41,32 @@ func _process(_delta):
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		var mouse_tile = Utils.pos_to_tile($Zone.get_global_mouse_position())
-		var mouse_tid = Utils.tile_id(mouse_tile, map.size.x)
+		var mouse_tid = Utils.tile_id(mouse_tile, $Zone.map_size().x)
+		var valid_point = Utils.in_bounds(mouse_tile, $Zone.map_size()) and $Zone.get_nav().has_point(mouse_tid)
+		
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			match input_state:
 				ATTACK:
-					if map.in_bounds(mouse_tile) and map.nav.has_point(mouse_tid):
-						var turn = ceil((Utils.tile_dist(player.tile, mouse_tile) + 1) / 2)
-						
+					if valid_point:
+						var turn = ceil((Utils.tile_dist(player.get_tile(), mouse_tile) + 1) / 2)
+
 						action = {
 							"type": "attack",
 							"target": mouse_tid,
 						}
-						
+
 						$Zone/HighlightTile.position = Utils.tile_to_pos(mouse_tile)
 						$Zone/HighlightTile/Turn.text = str(turn)
 						$Zone/HighlightTile.show()
 				MOVE:
-					if map.in_bounds(mouse_tile) and map.nav.has_point(mouse_tid):
-						var turn = ceil(Utils.tile_dist(player.tile, mouse_tile) / 2)
-						
+					if valid_point:
+						var turn = ceil(Utils.tile_dist(player.get_tile(), mouse_tile) / 2)
+
 						action = {
 							"type": "move",
 							"target": mouse_tid,
 						}
-						
+
 						$Zone/HighlightTile.position = Utils.tile_to_pos(mouse_tile)
 						$Zone/HighlightTile/Turn.text = str(turn)
 						$Zone/HighlightTile.show()
@@ -84,10 +81,10 @@ func _on_MoveButton_toggled(button_pressed):
 		action.clear()
 		
 		$Zone/TileOverlay.clear()
-		_update_overlay_tiles($PlayerData.get_attribute(pid, "move_range"))
+		_update_overlay_tiles(1)
 		
 		for t in overlay_tiles:
-			$Zone/TileOverlay.set_cellv(map.nav.get_point_position(t), 1)
+			$Zone/TileOverlay.set_cellv($Zone.get_nav().get_point_position(t), 1)
 	else:
 		input_state = NEUTRAL
 		emit_signal("input_state_changed", input_state)
@@ -101,10 +98,10 @@ func _on_AttackButton_toggled(button_pressed):
 		action.clear()
 		
 		$Zone/TileOverlay.clear()
-		_update_overlay_tiles($PlayerData.get_attribute(pid, "attack_range"))
+		_update_overlay_tiles(1)
 		
 		for t in overlay_tiles:
-			$Zone/TileOverlay.set_cellv(map.nav.get_point_position(t), 2)
+			$Zone/TileOverlay.set_cellv($Zone.get_nav().get_point_position(t), 2)
 	else:
 		input_state = NEUTRAL
 		emit_signal("input_state_changed", input_state)
@@ -125,42 +122,21 @@ func _on_player_move_complete():
 	emit_signal("input_state_changed", input_state)
 
 # Multiplayer Linked Functions
-func _on_action_results(results):
-	match results:
-		{"path": var path, "id": var id, ..}:
-			_execute_player_path(id, path)
-
-func _on_force_update():
-	player.set_tile_position($PlayerData.get_attribute(pid, "position"))
-
-# Receives ALL player data
-func _on_player_sync(data):
-	for id in data:
-		if int(id) == int(pid):
-			match data[id]:
-				{"position": var pos, ..}:
-					$PlayerData.update_attribute(pid, "position", pos)
-		else:
-			if not has_node("Zone/Players/" + str(id)):
-				var new_player = preload("res://player.tscn").instance()
-				new_player.set_name(str(id))
-				new_player.set_tile_position(data[id]["position"])
-				$Zone/Players.add_child(new_player)
+func _on_player_updated(data: Dictionary):
+	player.data = data
 	
-func _on_map_sync(data):
-	var map_gen = MapGenerator.new()
-	map_gen.generate_map(map, data)
+func _on_zone_updated(data: Dictionary):
+	$Zone.zone = data
 	
 # Utility
-
 func _update_overlay_tiles(dist):
-	var player_tid = player.tile.x + player.tile.y * map.size.x
-	overlay_tiles = Utils.bfs_range(map.nav, player_tid, dist)
+	var player_tid = player.get_tile().x + player.get_tile().y * $Zone.map_size().x
+	overlay_tiles = Utils.bfs_range($Zone.get_nav(), player_tid, dist)
 
 func _execute_player_path(id, path):
 	var tile_path = []
 	for p in path:
-		tile_path.append(map.nav.get_point_position(p))
+		tile_path.append($Zone.get_nav().get_point_position(p))
 	
 	if int(id) == int(pid):
 		player.move_path(tile_path)

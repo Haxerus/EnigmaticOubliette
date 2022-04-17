@@ -1,10 +1,10 @@
 [gd_scene load_steps=14 format=2]
 
-[ext_resource path="res://client.gd" type="Script" id=1]
-[ext_resource path="res://zone.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scripts/client/client.gd" type="Script" id=1]
+[ext_resource path="res://scenes/zone.tscn" type="PackedScene" id=2]
 [ext_resource path="res://custom_theme.tres" type="Theme" id=6]
 [ext_resource path="res://assets/go_button.png" type="Texture" id=7]
-[ext_resource path="res://ui_buttons.gd" type="Script" id=8]
+[ext_resource path="res://scripts/client/ui_buttons.gd" type="Script" id=8]
 
 [sub_resource type="InputEventAction" id=7]
 action = "action_end_turn"
@@ -141,7 +141,6 @@ text = "Sky Meadow Tower Isle North-South F69420"
 
 [node name="Zone" parent="." instance=ExtResource( 2 )]
 
-[connection signal="input_state_changed" from="." to="HUDLayer/HUD/UIButtons" method="_on_input_state_changed"]
 [connection signal="pressed" from="HUDLayer/HUD/EndTurnButton" to="." method="_on_EndTurnButton_pressed"]
 [connection signal="toggled" from="HUDLayer/HUD/UIButtons/MoveButton" to="." method="_on_MoveButton_toggled"]
 [connection signal="toggled" from="HUDLayer/HUD/UIButtons/AttackButton" to="." method="_on_AttackButton_toggled"]

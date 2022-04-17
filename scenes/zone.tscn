@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://zone_tileset.tres" type="TileSet" id=1]
-[ext_resource path="res://map.gd" type="Script" id=2]
+[ext_resource path="res://scripts/client/zone.gd" type="Script" id=2]
 [ext_resource path="res://overlay_tileset.tres" type="TileSet" id=3]
 [ext_resource path="res://assets/highlight-tile.png" type="Texture" id=4]
 [ext_resource path="res://custom_theme.tres" type="Theme" id=5]
@@ -12,6 +12,7 @@ size = 10
 font_data = ExtResource( 6 )
 
 [node name="Zone" type="Node2D"]
+script = ExtResource( 2 )
 __meta__ = {
 "_edit_horizontal_guides_": [  ]
 }
@@ -22,7 +23,6 @@ cell_size = Vector2( 16, 16 )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 cell_tile_origin = 1
 format = 1
-script = ExtResource( 2 )
 
 [node name="TileOverlay" type="TileMap" parent="."]
 tile_set = ExtResource( 3 )
@@ -30,6 +30,8 @@ cell_size = Vector2( 16, 16 )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 cell_tile_origin = 1
 format = 1
+
+[node name="Interactables" type="Node2D" parent="."]
 
 [node name="HighlightTile" type="Sprite" parent="."]
 visible = false
@@ -51,8 +53,6 @@ valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Interactables" type="Node2D" parent="."]
 
 [node name="Players" type="Node2D" parent="."]
 

@@ -1,6 +1,6 @@
 extends Control
 
-var client = preload("res://client.tscn").instance()
+var client = preload("res://scenes/client.tscn").instance()
 
 func _ready():
 	Multiplayer.connect("connection_succeeded", self, "_on_connection_succeeded")
@@ -19,8 +19,9 @@ func _on_join_pressed():
 	$Connect/ErrorLabel.text = ""
 	$Connect/Join.disabled = true
 
-	var _player_name = $Connect/Name.text
+	var player_name = $Connect/Name.text
 	Multiplayer.join_game(ip)
+	Multiplayer.client_init(player_name)
 
 func _on_connection_succeeded():
 	hide()
