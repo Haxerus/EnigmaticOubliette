@@ -10,11 +10,11 @@ static func tile_to_pos(tile: Vector2) -> Vector2:
 	var pos = tile * 16 + Vector2(8, 8)
 	return pos
 	
-static func tile_dist(t1: Vector2, t2: Vector2) -> int:
-	return int(abs(t1.x - t2.x) + abs(t1.y - t2.y))
+static func tile_dist(t1: Vector2, t2: Vector2):
+	return abs(t1.x - t2.x) + abs(t1.y - t2.y)
 	
-static func tile_id(tile: Vector2, map_width: int) -> int:
-	return int(tile.x + tile.y * map_width)
+static func tile_id(tile: Vector2, map_width: int):
+	return tile.x + tile.y * map_width
 
 static func id_tile(id: int, map_width: int) -> Vector2:
 	var x = int(id) % int(map_width)

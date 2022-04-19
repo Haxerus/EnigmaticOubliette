@@ -1,15 +1,13 @@
 extends Node2D
 
-var data = ZoneData.new() setget _data_changed
-
 func _ready():
-	pass
+	load_map()
 
-func _data_changed(new_data: Dictionary):
-	data.deserialize(new_data)
-
-func map_size() -> Vector2:
-	return data.map.size
-
-func get_nav() -> AStar2D:
-	return data.nav
+func load_map():
+	var map = GameData.zones.current.map
+	print(map.size)
+	
+	for x in range(0, map.size.x):
+		for y in range(0, map.size.y):
+			var tile = map.tiles[x + y * map.size.x]
+			$Map.set_cell(x, y, tile)

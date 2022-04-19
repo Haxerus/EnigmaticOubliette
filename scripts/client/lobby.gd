@@ -5,6 +5,7 @@ var client = preload("res://scenes/client.tscn").instance()
 func _ready():
 	Multiplayer.connect("connection_succeeded", self, "_on_connection_succeeded")
 	Multiplayer.connect("connection_failed", self, "_on_connection_failed")
+	Multiplayer.connect("client_ready", self, "_on_client_ready")
 
 func _on_join_pressed():
 	if $Connect/Name.text == "":
@@ -16,16 +17,17 @@ func _on_join_pressed():
 		$Connect/ErrorLabel.text = "Invalid IP address"
 		return
 
-	$Connect/ErrorLabel.text = ""
+	$Connect/ErrorLabel.text = "Connecting..."
 	$Connect/Join.disabled = true
-
-	var player_name = $Connect/Name.text
 	Multiplayer.join_game(ip)
-	Multiplayer.client_init(player_name)
+
+func _on_client_ready():
+	get_tree().get_root().add_child(client)
+	hide()
 
 func _on_connection_succeeded():
-	hide()
-	get_tree().get_root().add_child(client)
+	var player_name = $Connect/Name.text
+	Multiplayer.client_init(player_name)
 	$Connect/ErrorLabel.set_text("Connected to server.")
 
 func _on_connection_failed():

@@ -3,6 +3,8 @@ extends Node
 enum {NEUTRAL, ATTACK, MOVE, LOCKED}
 
 onready var pid = get_tree().get_network_unique_id()
+onready var player_data = GameData.players[pid].data
+onready var zone_data = GameData.zones.current
 
 var player = preload("res://scenes/player.tscn").instance()
 
@@ -15,10 +17,8 @@ signal input_state_changed(state)
 
 func _ready():
 	player.get_node("Camera").make_current()
+	player.position = Utils.tile_to_pos(player_data.position)
 	$Zone/Players.add_child(player)
-	
-	Multiplayer.connect("player_updated", self, "_on_player_updated")
-	Multiplayer.connect("zone_updated", self, "_on_zone_updated")
 	
 	player.connect("player_move_complete", self, "_on_player_move_complete")
 
@@ -38,17 +38,18 @@ func _process(_delta):
 			$Zone/HighlightTile.hide()
 			action.clear()
 
+# HUD functions
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		var mouse_tile = Utils.pos_to_tile($Zone.get_global_mouse_position())
-		var mouse_tid = Utils.tile_id(mouse_tile, $Zone.map_size().x)
-		var valid_point = Utils.in_bounds(mouse_tile, $Zone.map_size()) and $Zone.get_nav().has_point(mouse_tid)
+		var mouse_tid = Utils.tile_id(mouse_tile, zone_data.map.size.x)
+		var valid_point = Utils.in_bounds(mouse_tile, zone_data.map.size) and zone_data.nav.has_point(mouse_tid)
 		
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			match input_state:
 				ATTACK:
 					if valid_point:
-						var turn = ceil((Utils.tile_dist(player.get_tile(), mouse_tile) + 1) / 2)
+						var turn = ceil((Utils.tile_dist(player_data.position, mouse_tile) + 1) / 2)
 
 						action = {
 							"type": "attack",
@@ -60,7 +61,7 @@ func _unhandled_input(event):
 						$Zone/HighlightTile.show()
 				MOVE:
 					if valid_point:
-						var turn = ceil(Utils.tile_dist(player.get_tile(), mouse_tile) / 2)
+						var turn = ceil(Utils.tile_dist(player_data.position, mouse_tile) / 2)
 
 						action = {
 							"type": "move",
@@ -71,7 +72,6 @@ func _unhandled_input(event):
 						$Zone/HighlightTile/Turn.text = str(turn)
 						$Zone/HighlightTile.show()
 
-# HUD functions
 func _on_MoveButton_toggled(button_pressed):
 	if button_pressed:
 		input_state = MOVE
@@ -81,10 +81,10 @@ func _on_MoveButton_toggled(button_pressed):
 		action.clear()
 		
 		$Zone/TileOverlay.clear()
-		_update_overlay_tiles(1)
+		_update_overlay_tiles(player_data.movement)
 		
 		for t in overlay_tiles:
-			$Zone/TileOverlay.set_cellv($Zone.get_nav().get_point_position(t), 1)
+			$Zone/TileOverlay.set_cellv(zone_data.nav.get_point_position(t), 1)
 	else:
 		input_state = NEUTRAL
 		emit_signal("input_state_changed", input_state)
@@ -98,10 +98,10 @@ func _on_AttackButton_toggled(button_pressed):
 		action.clear()
 		
 		$Zone/TileOverlay.clear()
-		_update_overlay_tiles(1)
+		_update_overlay_tiles(player_data.attack_range)
 		
 		for t in overlay_tiles:
-			$Zone/TileOverlay.set_cellv($Zone.get_nav().get_point_position(t), 2)
+			$Zone/TileOverlay.set_cellv(zone_data.nav.get_point_position(t), 2)
 	else:
 		input_state = NEUTRAL
 		emit_signal("input_state_changed", input_state)
@@ -122,21 +122,17 @@ func _on_player_move_complete():
 	emit_signal("input_state_changed", input_state)
 
 # Multiplayer Linked Functions
-func _on_player_updated(data: Dictionary):
-	player.data = data
-	
-func _on_zone_updated(data: Dictionary):
-	$Zone.zone = data
 	
 # Utility
 func _update_overlay_tiles(dist):
-	var player_tid = player.get_tile().x + player.get_tile().y * $Zone.map_size().x
-	overlay_tiles = Utils.bfs_range($Zone.get_nav(), player_tid, dist)
+	var player_pos = player_data.position
+	var player_tid = player_pos.x + player_pos.y * zone_data.map.size.x
+	overlay_tiles = Utils.bfs_range(zone_data.nav, player_tid, dist)
 
 func _execute_player_path(id, path):
 	var tile_path = []
 	for p in path:
-		tile_path.append($Zone.get_nav().get_point_position(p))
+		tile_path.append(zone_data.nav.get_point_position(p))
 	
 	if int(id) == int(pid):
 		player.move_path(tile_path)

@@ -6,8 +6,6 @@ const MAX_PEERS = 8
 var peer
 var upnp_thread
 
-enum { PLAYER_DATA, ZONE_DATA, MAP_DATA, ENEMY_DATA }
-
 signal connection_succeeded
 signal connection_failed
 signal network_error(error)
@@ -17,11 +15,12 @@ signal upnp_completed(error)
 
 signal player_joined(id)
 signal player_left(id)
-
-# Shared
-signal player_updated(data)
+signal client_init(id, data)
 
 # Client Only
+signal client_ready
+
+signal player_updated(data)
 signal zone_updated(data)
 signal enemy_updated(data)
 	
@@ -29,20 +28,18 @@ signal enemy_updated(data)
 
 # Server Side
 # This syncs client data to the server when one joins
-remote func init_client_data(data: Dictionary):
+remote func recv_client_init(data: Dictionary):
 	if get_tree().is_network_server():
-		emit_signal("player_updated", data)
+		emit_signal("client_init", get_tree().get_rpc_sender_id(), data)
+
+func enable_client(id):
+	if get_tree().is_network_server():
+		rpc_id(id, "setup_end")
 
 # Client Side
-remote func sync_data(packet: Dictionary):
+remote func setup_end():
 	if not get_tree().is_network_server():
-		match packet:
-			{"type": PLAYER_DATA, "data": var data}:
-				emit_signal("player_updated", data)
-			{"type": ZONE_DATA, "data": var data}:
-				emit_signal("zone_updated", data)
-			{"type": ENEMY_DATA, "data": var data}:
-				emit_signal("enemy_updated", data)
+		emit_signal("client_ready")
 
 # Make Real
 func send_action(action):
@@ -51,18 +48,17 @@ func send_action(action):
 func client_init(n: String):
 	if not get_tree().is_network_server():
 		var data = {
-			"id": get_tree().get_network_unique_id(),
 			"name": n,
 		}
-		rpc_id(1, "init_client_data", data)
+		rpc_id(1, "recv_client_init", data)
 
 # General Multiplayer Functions
 
 func host_game():
 	peer = NetworkedMultiplayerENet.new()
-	peer.create_server(DEFAULT_PORT)
 	# Figure out what this actually does
-	# peer.set_server_relay_enabled(false)
+	peer.set_server_relay_enabled(false)
+	peer.create_server(DEFAULT_PORT)
 	get_tree().set_network_peer(peer)
 	
 func join_game(ip):
@@ -73,10 +69,12 @@ func join_game(ip):
 # Callbacks from SceneTree
 
 func _player_connected(id):
+	print("Peer ", id, " connected")
 	if get_tree().is_network_server():
 		emit_signal("player_joined", id)
 	
 func _player_disconnected(id):
+	print("Peer ", id, " disconnected")
 	if get_tree().is_network_server():
 		emit_signal("player_left", id)
 

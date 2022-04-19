@@ -5,7 +5,6 @@ class_name PlayerData
 var id
 var zone_id
 
-var position = Vector2()
 var data = {}
 
 func _init(pid: int, zid: int):
@@ -14,17 +13,10 @@ func _init(pid: int, zid: int):
 	
 	data = DataDefaults.player_stats.default
 	data.name = str(id)
-	
-func deserialize(player: Dictionary):
-	id = player.id
-	zone_id = player.zone_id
-	position = player.position
-	data = player.data
 
 func serialize():
-	var output = {
+	return {
 		"id": id,
 		"zone_id": zone_id,
-		"position": position,
 		"data": data,
 	}

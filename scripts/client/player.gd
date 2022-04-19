@@ -2,13 +2,10 @@ extends Sprite
 
 export var anim_speed = 1 / 8.0
 
-var data = PlayerData.new(-1, -1) setget _data_changed
-
 signal player_move_complete
 
 func _ready():
-	data.position = Vector2(3, 3)
-	position = Utils.tile_to_pos(data.position)
+	pass
 
 func move_path(tile_path):
 	for t in tile_path:
@@ -18,9 +15,6 @@ func move_path(tile_path):
 
 func set_tile_position(t_pos: Vector2):
 	position = Utils.tile_to_pos(t_pos)
-	
-func _data_changed(new_data: Dictionary):
-	data.deserialize(new_data)
 
 func _move_to(target: Vector2):
 	match position.direction_to(target):
@@ -38,6 +32,3 @@ func _move_to(target: Vector2):
 func _move_to_tile(target_tile: Vector2):
 	var target = target_tile * 16 + Vector2(8, 8)
 	_move_to(target)
-
-func get_tile() -> Vector2:
-	return data.position

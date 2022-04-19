@@ -4,24 +4,14 @@ class_name EnemyData
 
 var id
 
-var position = Vector2()
 var data = {}
 
-func _init(_id: int = -1):
-	if _id == -1:
-		id = self.get_instance_id()
-	else:
-		id = _id
+func _init():
+	id = self.get_instance_id()
 	data = DataDefaults.enemy_stats.default
 
-func deserialize(enemy: Dictionary):
-	id = enemy.id
-	position = enemy.position
-	data = enemy.data
-
 func serialize():
-	var output = {
+	return {
 		"id": id,
-		"position": position,
 		"data": data,
 	}
