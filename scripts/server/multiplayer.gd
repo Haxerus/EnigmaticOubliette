@@ -17,6 +17,8 @@ signal player_joined(id)
 signal player_left(id)
 signal client_init(id, data)
 
+signal action_received(sender, data)
+
 # Client Only
 signal client_ready
 
@@ -31,7 +33,11 @@ signal enemy_updated(data)
 remote func recv_client_init(data: Dictionary):
 	if get_tree().is_network_server():
 		emit_signal("client_init", get_tree().get_rpc_sender_id(), data)
-
+		
+remote func recv_client_action(action: Dictionary):
+	if get_tree().is_network_server():
+		emit_signal("action_received", get_tree().get_rpc_sender_id(), action)
+	
 func enable_client(id):
 	if get_tree().is_network_server():
 		rpc_id(id, "setup_end")

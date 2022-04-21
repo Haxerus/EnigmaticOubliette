@@ -19,7 +19,7 @@ var player_stats = {
 		"attack": 10,
 		"defense": 10,
 		"speed": 10,
-		"movement": 2,
+		"movement": 3,
 		"attack_range": 1,
 	},
 }

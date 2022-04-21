@@ -1,8 +1,12 @@
 extends Node
 
+func spawn_enemy():
+	pass
+
 func _on_player_joined(id: int):
 	GameData.add_player(id)
 	GameData.add_player_to_zone(id, 0)
+	GameData.update_player(id, {"position": GameData.zones[0].map.size / 2})
 	
 func _on_player_left(id: int):
 	GameData.remove_player(id)

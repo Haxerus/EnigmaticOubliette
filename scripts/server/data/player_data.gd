@@ -20,3 +20,8 @@ func serialize():
 		"zone_id": zone_id,
 		"data": data,
 	}
+
+func deserialize(dict: Dictionary):
+	id = dict.id
+	zone_id = dict.zone_id
+	data = dict.data

@@ -41,36 +41,34 @@ func _process(_delta):
 # HUD functions
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
-		var mouse_tile = Utils.pos_to_tile($Zone.get_global_mouse_position())
-		var mouse_tid = Utils.tile_id(mouse_tile, zone_data.map.size.x)
-		var valid_point = Utils.in_bounds(mouse_tile, zone_data.map.size) and zone_data.nav.has_point(mouse_tid)
-		
 		if event.button_index == BUTTON_LEFT and event.pressed:
-			match input_state:
-				ATTACK:
-					if valid_point:
-						var turn = ceil((Utils.tile_dist(player_data.position, mouse_tile) + 1) / 2)
+			var mouse_tile = Utils.pos_to_tile($Zone.get_global_mouse_position())
+			var mouse_tid = Utils.tile_id(mouse_tile, zone_data.map.size.x)
+			var valid_point = Utils.in_bounds(mouse_tile, zone_data.map.size) and zone_data.nav.has_point(mouse_tid)
+			var turn
+			
+			if mouse_tid in overlay_tiles:
+				match input_state:
+					ATTACK:
+						if valid_point:
+							turn = ceil((Utils.tile_dist(player_data.position, mouse_tile) + 1) / 2)
 
-						action = {
-							"type": "attack",
-							"target": mouse_tid,
-						}
+							action = {
+								"type": "attack",
+								"target": mouse_tid,
+							}
+					MOVE:
+						if valid_point:
+							turn = ceil(Utils.tile_dist(player_data.position, mouse_tile) / 2)
 
-						$Zone/HighlightTile.position = Utils.tile_to_pos(mouse_tile)
-						$Zone/HighlightTile/Turn.text = str(turn)
-						$Zone/HighlightTile.show()
-				MOVE:
-					if valid_point:
-						var turn = ceil(Utils.tile_dist(player_data.position, mouse_tile) / 2)
-
-						action = {
-							"type": "move",
-							"target": mouse_tid,
-						}
-
-						$Zone/HighlightTile.position = Utils.tile_to_pos(mouse_tile)
-						$Zone/HighlightTile/Turn.text = str(turn)
-						$Zone/HighlightTile.show()
+							action = {
+								"type": "move",
+								"target": mouse_tid,
+							}
+				
+				$Zone/HighlightTile.position = Utils.tile_to_pos(mouse_tile)
+				$Zone/HighlightTile/Turn.text = str(turn)
+				$Zone/HighlightTile.show()
 
 func _on_MoveButton_toggled(button_pressed):
 	if button_pressed:

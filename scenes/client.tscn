@@ -82,7 +82,7 @@ toggle_mode = true
 shortcut_in_tooltip = false
 action_mode = 0
 shortcut = SubResource( 4 )
-text = "move (x)"
+text = "MOVE (X)"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -97,7 +97,7 @@ toggle_mode = true
 shortcut_in_tooltip = false
 action_mode = 0
 shortcut = SubResource( 6 )
-text = "items (c)"
+text = "ITEMS (C)"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -112,10 +112,7 @@ toggle_mode = true
 shortcut_in_tooltip = false
 action_mode = 0
 shortcut = SubResource( 2 )
-text = "attack (z)"
-__meta__ = {
-"_edit_use_anchors_": false
-}
+text = "ATTACK (Z)"
 
 [node name="LoadingScreen" type="ColorRect" parent="HUDLayer"]
 visible = false
@@ -141,6 +138,7 @@ text = "Sky Meadow Tower Isle North-South F69420"
 
 [node name="Zone" parent="." instance=ExtResource( 2 )]
 
+[connection signal="input_state_changed" from="." to="HUDLayer/HUD/UIButtons" method="_on_input_state_changed"]
 [connection signal="pressed" from="HUDLayer/HUD/EndTurnButton" to="." method="_on_EndTurnButton_pressed"]
 [connection signal="toggled" from="HUDLayer/HUD/UIButtons/MoveButton" to="." method="_on_MoveButton_toggled"]
 [connection signal="toggled" from="HUDLayer/HUD/UIButtons/AttackButton" to="." method="_on_AttackButton_toggled"]
