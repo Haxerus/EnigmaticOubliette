@@ -17,7 +17,8 @@ signal player_joined(id)
 signal player_left(id)
 signal client_init(id, data)
 
-signal action_received(sender, data)
+signal action_received(action)
+signal outcome_received(outcome)
 
 # Client Only
 signal client_ready
@@ -25,6 +26,8 @@ signal client_ready
 signal player_updated(data)
 signal zone_updated(data)
 signal enemy_updated(data)
+
+signal game_event(event)
 	
 # Game specific network functions
 
@@ -36,20 +39,39 @@ remote func recv_client_init(data: Dictionary):
 		
 remote func recv_client_action(action: Dictionary):
 	if get_tree().is_network_server():
-		emit_signal("action_received", get_tree().get_rpc_sender_id(), action)
+		emit_signal("action_received", action)
 	
 func enable_client(id):
 	if get_tree().is_network_server():
 		rpc_id(id, "setup_end")
+		
+func send_turn_outcome(outcome: Array):
+	if get_tree().is_network_server():
+		rpc("recv_turn_outcome", outcome)
+
+func send_game_event(event: Dictionary, receiver=null):
+	if get_tree().is_network_server():
+		if receiver == null:
+			rpc("dispatch_game_event", event)
+		else:
+			rpc_id(receiver, "dispatch_game_event", event)
 
 # Client Side
 remote func setup_end():
 	if not get_tree().is_network_server():
 		emit_signal("client_ready")
+		
+remote func recv_turn_outcome(outcome: Array):
+	if not get_tree().is_network_server():
+		emit_signal("outcome_received", outcome)
 
-# Make Real
-func send_action(action):
-	pass
+remote func dispatch_game_event(event: Dictionary):
+	if not get_tree().is_network_server():
+		emit_signal("game_event", event)
+
+func send_action(action: Dictionary):
+	if not get_tree().is_network_server():
+		rpc_id(1, "recv_client_action", action)
 		
 func client_init(n: String):
 	if not get_tree().is_network_server():

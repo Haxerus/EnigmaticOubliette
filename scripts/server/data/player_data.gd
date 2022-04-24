@@ -11,7 +11,7 @@ func _init(pid: int, zid: int):
 	id = pid
 	zone_id = zid
 	
-	data = DataDefaults.player_stats.default
+	data = DataDefaults.player_stats.default.duplicate(true)
 	data.name = str(id)
 
 func serialize():
@@ -22,6 +22,4 @@ func serialize():
 	}
 
 func deserialize(dict: Dictionary):
-	id = dict.id
-	zone_id = dict.zone_id
-	data = dict.data
+	data = dict.duplicate(true)

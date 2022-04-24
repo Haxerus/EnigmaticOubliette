@@ -15,20 +15,20 @@ script = ExtResource( 4 )
 
 [node name="Background" type="TextureRect" parent="."]
 anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -628.0
-margin_top = -260.0
-margin_right = 581.0
-margin_bottom = 403.0
+anchor_bottom = 1.774
+margin_bottom = 0.019989
 texture = ExtResource( 2 )
 expand = true
 stretch_mode = 6
 
 [node name="TitleImage" type="TextureRect" parent="."]
-anchor_left = 0.354688
-anchor_top = 0.0347222
-anchor_right = 0.645312
-anchor_bottom = 0.418056
+anchor_left = 0.355
+anchor_top = 0.0148148
+anchor_right = 0.645
+anchor_bottom = 0.397815
+margin_left = -0.149765
+margin_right = 0.14975
+margin_bottom = 0.090126
 texture = ExtResource( 3 )
 expand = true
 stretch_mode = 5
@@ -48,25 +48,21 @@ theme = ExtResource( 1 )
 text = "risk of exile: Mystery dungeon"
 
 [node name="Connect" type="Panel" parent="."]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -105.0
-margin_top = -40.5
-margin_right = 105.0
-margin_bottom = 198.5
+anchor_left = 0.420573
+anchor_top = 0.471065
+anchor_right = 0.579427
+anchor_bottom = 0.690972
 custom_styles/panel = SubResource( 1 )
 __meta__ = {
-"_edit_use_anchors_": false
+"_edit_use_anchors_": true
 }
 
 [node name="Name" type="LineEdit" parent="Connect"]
-anchor_left = 0.0356019
-anchor_top = 0.0627615
-anchor_right = 0.940364
-anchor_bottom = 0.23431
-margin_right = -86.0938
+anchor_left = 0.03544
+anchor_top = 0.075419
+anchor_right = 0.96456
+anchor_bottom = 0.328051
+margin_top = 4.76837e-07
 theme = ExtResource( 1 )
 text = "Default"
 placeholder_text = "name"
@@ -75,11 +71,10 @@ __meta__ = {
 }
 
 [node name="IPAddress" type="LineEdit" parent="Connect"]
-anchor_left = 0.0378391
-anchor_top = 0.280335
-anchor_right = 0.942601
-anchor_bottom = 0.451883
-margin_right = -86.0938
+anchor_left = 0.03544
+anchor_top = 0.373681
+anchor_right = 0.96456
+anchor_bottom = 0.626312
 theme = ExtResource( 1 )
 text = "127.0.0.1"
 placeholder_text = "ip address"
@@ -88,10 +83,10 @@ __meta__ = {
 }
 
 [node name="Join" type="Button" parent="Connect"]
-anchor_left = 0.335714
-anchor_top = 0.769874
-anchor_right = 0.664286
-anchor_bottom = 0.924686
+anchor_left = 0.377049
+anchor_top = 0.715789
+anchor_right = 0.622951
+anchor_bottom = 0.926316
 theme = ExtResource( 1 )
 text = "join"
 __meta__ = {
@@ -99,14 +94,14 @@ __meta__ = {
 }
 
 [node name="ErrorLabel" type="Label" parent="Connect"]
-anchor_left = 0.5
+anchor_left = 0.148
 anchor_top = 0.621
-anchor_right = 0.5
-anchor_bottom = 0.621
-margin_left = -42.5
-margin_top = -6.91901
-margin_right = 42.5
-margin_bottom = 7.08099
+anchor_right = 0.887
+anchor_bottom = 0.72
+margin_left = -0.0200005
+margin_top = -0.972
+margin_right = -0.00500488
+margin_bottom = -0.0400009
 grow_horizontal = 2
 custom_colors/font_color = Color( 1, 0.364706, 0.364706, 1 )
 align = 1

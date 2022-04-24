@@ -4,15 +4,17 @@ var zones = {}
 var players = {}
 var enemies = {}
 
-puppet func load_player(data):
+puppet func updated_players(p_list):
+	print(p_list)
+	
+puppet func load_player(data: Dictionary):
+	if players.has(data.id):
+		return
+	
 	var player = PlayerData.new(data.id, data.zone_id)
 	player.data = data.data
 	
-	players[player.id] = player
-	
-puppet func delete_player(id: int):
-	zones.current.remove_player(id)
-	players.erase(id)
+	players[data.id] = player
 	
 puppet func load_zone(data: Dictionary):	
 	var zone = ZoneData.new()
@@ -36,22 +38,30 @@ puppet func player_changed_zone(id: int, zid: int):
 	else:
 		zones.current.remove_player(id)
 
-# Server only
-func add_player(id: int):
+
+remote func add_player(id: int):
 	players[id] = PlayerData.new(id, -1)
 	
-	sync_players()
-
-func remove_player(id: int):
-	var zid = players[id].zone_id
-	zones[zid].remove_player(id)
-	players.erase(id)
-	
-	rpc("delete_player", id)
+	if get_tree().is_network_server():
+		rpc("add_player", id)
 		
-func update_player(id: int, data: Dictionary):
+remote func update_player(id: int, data: Dictionary):
 	for key in data.keys():
 		players[id].data[key] = data[key]
+		
+	if get_tree().is_network_server():
+		rpc("update_player", id, data)
+
+remote func remove_player(id: int):
+	if get_tree().is_network_server():
+		var zid = players[id].zone_id
+		zones[zid].remove_player(id)
+		players.erase(id)
+	
+		rpc("remove_player", id)
+	else:
+		zones.current.remove_player(id)
+		players.erase(id)
 
 func add_player_to_zone(pid: int, zid: int):
 	var old = players[pid].zone_id
@@ -63,9 +73,17 @@ func add_player_to_zone(pid: int, zid: int):
 	rpc_id(pid, "load_zone", zones[zid].serialize())
 	rpc("player_changed_zone", pid, zid)
 
-func sync_players():
+func send_existing_players(receiver):
 	for player in players.values():
-		rpc("load_player", player.serialize())
+		if player.id != receiver:
+			rpc_id(receiver, "load_player", player.serialize())
+
+func sync_players():
+	var packet = []
+	for player in players.values():
+		packet.append(player.serialize())
+	
+	rpc("updated_players", packet)
 	
 func add_zone(zid: int = -1):
 	var zone = ZoneData.new()

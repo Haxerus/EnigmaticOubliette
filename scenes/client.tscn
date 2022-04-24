@@ -1,34 +1,24 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://scripts/client/client.gd" type="Script" id=1]
 [ext_resource path="res://scenes/zone.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/action_button.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/move-icon.png" type="Texture" id=4]
+[ext_resource path="res://assets/basic-attack.png" type="Texture" id=5]
 [ext_resource path="res://custom_theme.tres" type="Theme" id=6]
-[ext_resource path="res://assets/go_button.png" type="Texture" id=7]
-[ext_resource path="res://scripts/client/ui_buttons.gd" type="Script" id=8]
-
-[sub_resource type="InputEventAction" id=7]
-action = "action_end_turn"
-
-[sub_resource type="ShortCut" id=8]
-shortcut = SubResource( 7 )
-
-[sub_resource type="InputEventAction" id=3]
-action = "action_move"
-
-[sub_resource type="ShortCut" id=4]
-shortcut = SubResource( 3 )
-
-[sub_resource type="InputEventAction" id=5]
-action = "action_items"
-
-[sub_resource type="ShortCut" id=6]
-shortcut = SubResource( 5 )
+[ext_resource path="res://assets/button_icon.png" type="Texture" id=7]
 
 [sub_resource type="InputEventAction" id=1]
-action = "action_attack"
+action = "move_shortcut"
 
 [sub_resource type="ShortCut" id=2]
 shortcut = SubResource( 1 )
+
+[sub_resource type="InputEventAction" id=3]
+action = "basic_attack_shortcut"
+
+[sub_resource type="ShortCut" id=4]
+shortcut = SubResource( 3 )
 
 [node name="Client" type="Node"]
 script = ExtResource( 1 )
@@ -39,80 +29,120 @@ script = ExtResource( 1 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="EndTurnButton" type="Button" parent="HUDLayer/HUD"]
-anchor_left = 0.842188
-anchor_top = 0.936111
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_right = -10.0
-margin_bottom = -10.0
-theme = ExtResource( 6 )
-disabled = true
+anchor_left = 0.945
+anchor_top = 0.919
+anchor_right = 0.98
+anchor_bottom = 0.978
+margin_left = -0.200073
+margin_top = -0.26001
+margin_right = 0.199951
+margin_bottom = -0.119995
 shortcut_in_tooltip = false
-shortcut = SubResource( 8 )
-text = "NEXT TURN"
 icon = ExtResource( 7 )
-expand_icon = true
-__meta__ = {
-"_edit_use_anchors_": true
-}
 
-[node name="UIButtons" type="Control" parent="HUDLayer/HUD"]
-anchor_left = 0.269531
-anchor_top = 0.936111
-anchor_right = 0.730469
+[node name="ActionButtonContainer" type="HBoxContainer" parent="HUDLayer/HUD"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-margin_bottom = -10.0
-mouse_filter = 2
-script = ExtResource( 8 )
-__meta__ = {
-"_edit_use_anchors_": true
-}
+margin_left = -130.0
+margin_top = -52.0
+margin_right = 130.0
+grow_horizontal = 2
+rect_pivot_offset = Vector2( 130, 0 )
+alignment = 1
 
-[node name="MoveButton" type="Button" parent="HUDLayer/HUD/UIButtons"]
-anchor_left = 0.375
-anchor_right = 0.625
-anchor_bottom = 1.0
-theme = ExtResource( 6 )
-toggle_mode = true
-shortcut_in_tooltip = false
-action_mode = 0
-shortcut = SubResource( 4 )
-text = "MOVE (X)"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ItemsButton" type="Button" parent="HUDLayer/HUD/UIButtons"]
-anchor_left = 0.75
-anchor_right = 1.0
-anchor_bottom = 1.0
-theme = ExtResource( 6 )
-disabled = true
-toggle_mode = true
-shortcut_in_tooltip = false
-action_mode = 0
-shortcut = SubResource( 6 )
-text = "ITEMS (C)"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="AttackButton" type="Button" parent="HUDLayer/HUD/UIButtons"]
-anchor_right = 0.25
-anchor_bottom = 1.0
-margin_top = 6.10352e-05
-margin_bottom = -0.00787735
-theme = ExtResource( 6 )
-toggle_mode = true
-shortcut_in_tooltip = false
-action_mode = 0
+[node name="MoveButton" parent="HUDLayer/HUD/ActionButtonContainer" instance=ExtResource( 3 )]
+size_flags_horizontal = 6
+size_flags_vertical = 0
 shortcut = SubResource( 2 )
-text = "ATTACK (Z)"
+hotkey = "z"
+action_icon = ExtResource( 4 )
+
+[node name="BasicAttackButton" parent="HUDLayer/HUD/ActionButtonContainer" instance=ExtResource( 3 )]
+margin_left = 44.0
+margin_right = 84.0
+size_flags_horizontal = 6
+size_flags_vertical = 0
+shortcut = SubResource( 4 )
+hotkey = "x"
+action_icon = ExtResource( 5 )
+
+[node name="ActionButton1" parent="HUDLayer/HUD/ActionButtonContainer" instance=ExtResource( 3 )]
+margin_left = 88.0
+margin_right = 128.0
+size_flags_horizontal = 6
+size_flags_vertical = 0
+hotkey = "q"
+
+[node name="ActionButton2" parent="HUDLayer/HUD/ActionButtonContainer" instance=ExtResource( 3 )]
+margin_left = 132.0
+margin_right = 172.0
+size_flags_horizontal = 6
+size_flags_vertical = 0
+hotkey = "w"
+
+[node name="ActionButton3" parent="HUDLayer/HUD/ActionButtonContainer" instance=ExtResource( 3 )]
+margin_left = 176.0
+margin_right = 216.0
+size_flags_horizontal = 6
+size_flags_vertical = 0
+hotkey = "e"
+
+[node name="ActionButton4" parent="HUDLayer/HUD/ActionButtonContainer" instance=ExtResource( 3 )]
+margin_left = 220.0
+margin_right = 260.0
+size_flags_horizontal = 6
+size_flags_vertical = 0
+hotkey = "r"
+
+[node name="ActionButton5" parent="HUDLayer/HUD/ActionButtonContainer" instance=ExtResource( 3 )]
+visible = false
+margin_left = 264.0
+margin_right = 304.0
+size_flags_horizontal = 6
+size_flags_vertical = 0
+hotkey = "t"
+
+[node name="ActionButton6" parent="HUDLayer/HUD/ActionButtonContainer" instance=ExtResource( 3 )]
+visible = false
+margin_left = 264.0
+margin_right = 304.0
+size_flags_horizontal = 6
+size_flags_vertical = 0
+hotkey = "y"
+
+[node name="PlayerPos" type="Label" parent="HUDLayer/HUD"]
+margin_right = 86.0
+margin_bottom = 14.0
+theme = ExtResource( 6 )
+text = "player pos"
+
+[node name="PlayerStoredPos" type="Label" parent="HUDLayer/HUD"]
+margin_top = 17.0
+margin_right = 92.0
+margin_bottom = 31.0
+theme = ExtResource( 6 )
+text = "player stored pos"
+
+[node name="Movement" type="Label" parent="HUDLayer/HUD"]
+margin_top = 33.0
+margin_right = 62.0
+margin_bottom = 114.0
+theme = ExtResource( 6 )
+text = "movement"
+autowrap = true
+
+[node name="Action" type="Label" parent="HUDLayer/HUD"]
+margin_left = 90.0
+margin_top = 34.0
+margin_right = 152.0
+margin_bottom = 116.0
+theme = ExtResource( 6 )
+text = "action"
+autowrap = true
 
 [node name="LoadingScreen" type="ColorRect" parent="HUDLayer"]
 visible = false
@@ -138,7 +168,22 @@ text = "Sky Meadow Tower Isle North-South F69420"
 
 [node name="Zone" parent="." instance=ExtResource( 2 )]
 
-[connection signal="input_state_changed" from="." to="HUDLayer/HUD/UIButtons" method="_on_input_state_changed"]
+[node name="DebugTimer" type="Timer" parent="."]
+wait_time = 0.5
+autostart = true
+
+[connection signal="input_state_changed" from="." to="HUDLayer/HUD/ActionButtonContainer/MoveButton" method="_on_Client_input_state_changed"]
+[connection signal="input_state_changed" from="." to="HUDLayer/HUD/ActionButtonContainer/BasicAttackButton" method="_on_Client_input_state_changed"]
+[connection signal="input_state_changed" from="." to="HUDLayer/HUD/ActionButtonContainer/ActionButton1" method="_on_Client_input_state_changed"]
+[connection signal="input_state_changed" from="." to="HUDLayer/HUD/ActionButtonContainer/ActionButton2" method="_on_Client_input_state_changed"]
+[connection signal="input_state_changed" from="." to="HUDLayer/HUD/ActionButtonContainer/ActionButton3" method="_on_Client_input_state_changed"]
+[connection signal="input_state_changed" from="." to="HUDLayer/HUD/ActionButtonContainer/ActionButton4" method="_on_Client_input_state_changed"]
+[connection signal="input_state_changed" from="." to="HUDLayer/HUD/ActionButtonContainer/ActionButton5" method="_on_Client_input_state_changed"]
+[connection signal="input_state_changed" from="." to="HUDLayer/HUD/ActionButtonContainer/ActionButton6" method="_on_Client_input_state_changed"]
 [connection signal="pressed" from="HUDLayer/HUD/EndTurnButton" to="." method="_on_EndTurnButton_pressed"]
-[connection signal="toggled" from="HUDLayer/HUD/UIButtons/MoveButton" to="." method="_on_MoveButton_toggled"]
-[connection signal="toggled" from="HUDLayer/HUD/UIButtons/AttackButton" to="." method="_on_AttackButton_toggled"]
+[connection signal="toggled" from="HUDLayer/HUD/ActionButtonContainer/MoveButton" to="." method="_on_ActionButton_toggled" binds= [ 0 ]]
+[connection signal="toggled" from="HUDLayer/HUD/ActionButtonContainer/BasicAttackButton" to="." method="_on_ActionButton_toggled" binds= [ 1 ]]
+[connection signal="toggled" from="HUDLayer/HUD/ActionButtonContainer/ActionButton1" to="." method="_on_ActionButton_toggled" binds= [ 2 ]]
+[connection signal="toggled" from="HUDLayer/HUD/ActionButtonContainer/ActionButton2" to="." method="_on_ActionButton_toggled" binds= [ 3 ]]
+[connection signal="toggled" from="HUDLayer/HUD/ActionButtonContainer/ActionButton3" to="." method="_on_ActionButton_toggled" binds= [ 4 ]]
+[connection signal="toggled" from="HUDLayer/HUD/ActionButtonContainer/ActionButton4" to="." method="_on_ActionButton_toggled" binds= [ 5 ]]

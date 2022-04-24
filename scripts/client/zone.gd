@@ -1,6 +1,9 @@
 extends Node2D
 
 func _ready():
+	$Map.cell_size = Utils.TILE_SIZE
+	$TileOverlay.cell_size = Utils.TILE_SIZE
+	
 	load_map()
 
 func load_map():

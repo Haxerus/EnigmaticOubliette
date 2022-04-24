@@ -3,6 +3,7 @@
 [ext_resource path="res://ccra_inet_font.tres" type="DynamicFont" id=1]
 
 [resource]
+default_font = ExtResource( 1 )
 Button/colors/font_color = Color( 1, 1, 1, 1 )
 Button/colors/font_color_disabled = Color( 0.501961, 0.501961, 0.501961, 1 )
 Button/colors/font_color_focus = Color( 1, 1, 1, 1 )

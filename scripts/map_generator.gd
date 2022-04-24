@@ -19,13 +19,13 @@ func generate_map(settings: Dictionary) -> MapData:
 	
 	for x in range(map.size.x):
 		for y in range(map.size.y):
-			var tile_id = 0
+			var tile_id = 1
 			
 			if x == 0 or x == map.size.x - 1:
-				tile_id = 1
+				tile_id = 2
 			
 			if y == 0 or y == map.size.y - 1:
-				tile_id = 1
+				tile_id = 2
 			
 			map.tiles[x + y * map.size.x] = tile_id
 	

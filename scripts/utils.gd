@@ -1,13 +1,15 @@
 extends Node
 
+const TILE_SIZE = Vector2(32, 32)
+
 static func pos_to_tile(pos: Vector2) -> Vector2:
 	var tile = Vector2()
-	tile.x = floor(pos.x / 16)
-	tile.y = floor(pos.y / 16)
+	tile.x = floor(pos.x / TILE_SIZE.x)
+	tile.y = floor(pos.y / TILE_SIZE.y)
 	return tile
 	
 static func tile_to_pos(tile: Vector2) -> Vector2:
-	var pos = tile * 16 + Vector2(8, 8)
+	var pos = tile * TILE_SIZE + Vector2(TILE_SIZE.x / 2, TILE_SIZE.y / 2)
 	return pos
 	
 static func tile_dist(t1: Vector2, t2: Vector2):

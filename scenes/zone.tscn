@@ -1,15 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://zone_tileset.tres" type="TileSet" id=1]
 [ext_resource path="res://scripts/client/zone.gd" type="Script" id=2]
 [ext_resource path="res://overlay_tileset.tres" type="TileSet" id=3]
 [ext_resource path="res://assets/highlight-tile.png" type="Texture" id=4]
 [ext_resource path="res://custom_theme.tres" type="Theme" id=5]
-[ext_resource path="res://assets/sp.ttf" type="DynamicFontData" id=6]
-
-[sub_resource type="DynamicFont" id=1]
-size = 10
-font_data = ExtResource( 6 )
+[ext_resource path="res://assets/planned_pos.png" type="Texture" id=6]
 
 [node name="Zone" type="Node2D"]
 script = ExtResource( 2 )
@@ -19,14 +15,14 @@ __meta__ = {
 
 [node name="Map" type="TileMap" parent="."]
 tile_set = ExtResource( 1 )
-cell_size = Vector2( 16, 16 )
+cell_size = Vector2( 32, 32 )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 cell_tile_origin = 1
 format = 1
 
 [node name="TileOverlay" type="TileMap" parent="."]
 tile_set = ExtResource( 3 )
-cell_size = Vector2( 16, 16 )
+cell_size = Vector2( 32, 32 )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 cell_tile_origin = 1
 format = 1
@@ -38,21 +34,24 @@ visible = false
 texture = ExtResource( 4 )
 
 [node name="Turn" type="Label" parent="HighlightTile"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -15.0
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -16.0
 margin_top = -16.0
-margin_right = 1.0
+margin_right = -16.0
+margin_bottom = -16.0
 theme = ExtResource( 5 )
-custom_fonts/font = SubResource( 1 )
 text = "1"
 align = 1
 valign = 1
 __meta__ = {
-"_edit_use_anchors_": false
+"_edit_use_anchors_": true
 }
+
+[node name="PlannedPos" type="Sprite" parent="."]
+texture = ExtResource( 6 )
+offset = Vector2( 0, -8 )
 
 [node name="Players" type="Node2D" parent="."]
 

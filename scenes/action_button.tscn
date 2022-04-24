@@ -1,0 +1,70 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://assets/skill-frame.png" type="Texture" id=1]
+[ext_resource path="res://assets/empty_skill.png" type="Texture" id=2]
+[ext_resource path="res://assets/skill-button-frame.png" type="Texture" id=3]
+[ext_resource path="res://assets/ccra_inet.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://custom_theme.tres" type="Theme" id=5]
+[ext_resource path="res://scripts/client/ui/action_button.gd" type="Script" id=6]
+[ext_resource path="res://action_button_group.tres" type="ButtonGroup" id=7]
+
+[sub_resource type="DynamicFont" id=1]
+size = 13
+outline_size = 1
+outline_color = Color( 0, 0, 0, 1 )
+font_data = ExtResource( 4 )
+
+[node name="ActionButton" type="Button"]
+margin_right = 40.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 40, 40 )
+size_flags_horizontal = 2
+size_flags_vertical = 2
+toggle_mode = true
+shortcut_in_tooltip = false
+action_mode = 0
+button_mask = 3
+group = ExtResource( 7 )
+flat = true
+script = ExtResource( 6 )
+
+[node name="Icon" type="TextureRect" parent="."]
+anchor_left = 0.075
+anchor_top = 0.075
+anchor_right = 0.925
+anchor_bottom = 0.925
+rect_min_size = Vector2( 34, 34 )
+texture = ExtResource( 2 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Frame" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 40, 40 )
+texture = ExtResource( 1 )
+expand = true
+
+[node name="HotkeyFrame" type="TextureRect" parent="."]
+anchor_left = 0.337
+anchor_top = 0.825
+anchor_right = 0.662
+anchor_bottom = 1.15
+margin_left = 0.0199995
+margin_right = 0.0199966
+margin_bottom = -3.8147e-06
+rect_min_size = Vector2( 12, 12 )
+texture = ExtResource( 3 )
+expand = true
+
+[node name="Label" type="Label" parent="HotkeyFrame"]
+anchor_right = 1.077
+anchor_bottom = 1.077
+margin_right = -0.0010004
+margin_bottom = -0.0010004
+theme = ExtResource( 5 )
+custom_fonts/font = SubResource( 1 )
+align = 1
+valign = 1

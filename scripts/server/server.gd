@@ -1,26 +1,40 @@
 extends Node
 
+var turn_engine = TurnEngine.new()
+
 func spawn_enemy():
 	pass
 
 func _on_player_joined(id: int):
+	GameData.send_existing_players(id)
 	GameData.add_player(id)
 	GameData.add_player_to_zone(id, 0)
 	GameData.update_player(id, {"position": GameData.zones[0].map.size / 2})
+	GameData.sync_players()
+	Multiplayer.send_game_event({
+		"type": "player_joined",
+		"id": id,
+	})
+	Multiplayer.enable_client(id)
 	
 func _on_player_left(id: int):
 	GameData.remove_player(id)
-	
-func _on_client_init(id, data):
-	GameData.update_player(id, data)
-	GameData.sync_players()
-	Multiplayer.enable_client(id)
+	Multiplayer.send_game_event({
+		"type": "player_left",
+		"id": id,
+	})
+
+func _debug_print():
+	#print(GameData.players)
+	pass
 
 func _ready():
 	Multiplayer.connect("upnp_completed", self, "_on_upnp_completed")
 	Multiplayer.connect("player_joined", self, "_on_player_joined")
 	Multiplayer.connect("player_left", self, "_on_player_left")
 	Multiplayer.connect("client_init", self, "_on_client_init")
+	
+	Multiplayer.connect("action_received", turn_engine, "_on_action_received")
 	
 	print("[INFO] Starting server...")
 	
@@ -29,6 +43,8 @@ func _ready():
 	
 	print("[INFO] Generating starting zone...")
 	_init_starting_zone()
+	
+	$Timer.connect("timeout", self, "_debug_print")
 
 func _init_starting_zone():
 	var generator = MapGenerator.new()
