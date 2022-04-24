@@ -15,7 +15,6 @@ signal upnp_completed(error)
 
 signal player_joined(id)
 signal player_left(id)
-signal client_init(id, data)
 
 signal action_received(action)
 signal outcome_received(outcome)
@@ -32,11 +31,6 @@ signal game_event(event)
 # Game specific network functions
 
 # Server Side
-# This syncs client data to the server when one joins
-remote func recv_client_init(data: Dictionary):
-	if get_tree().is_network_server():
-		emit_signal("client_init", get_tree().get_rpc_sender_id(), data)
-		
 remote func recv_client_action(action: Dictionary):
 	if get_tree().is_network_server():
 		emit_signal("action_received", action)
@@ -72,13 +66,6 @@ remote func dispatch_game_event(event: Dictionary):
 func send_action(action: Dictionary):
 	if not get_tree().is_network_server():
 		rpc_id(1, "recv_client_action", action)
-		
-func client_init(n: String):
-	if not get_tree().is_network_server():
-		var data = {
-			"name": n,
-		}
-		rpc_id(1, "recv_client_init", data)
 
 # General Multiplayer Functions
 

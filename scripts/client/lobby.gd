@@ -26,8 +26,7 @@ func _on_client_ready():
 	hide()
 
 func _on_connection_succeeded():
-	var player_name = $Connect/Name.text
-	Multiplayer.client_init(player_name)
+	var _player_name = $Connect/Name.text
 	$Connect/ErrorLabel.set_text("Connected to server.")
 
 func _on_connection_failed():

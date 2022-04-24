@@ -5,7 +5,7 @@ var players = {}
 var enemies = {}
 
 puppet func updated_players(p_list):
-	print(p_list)
+	pass
 	
 puppet func load_player(data: Dictionary):
 	if players.has(data.id):

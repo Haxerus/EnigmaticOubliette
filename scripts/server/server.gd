@@ -32,7 +32,6 @@ func _ready():
 	Multiplayer.connect("upnp_completed", self, "_on_upnp_completed")
 	Multiplayer.connect("player_joined", self, "_on_player_joined")
 	Multiplayer.connect("player_left", self, "_on_player_left")
-	Multiplayer.connect("client_init", self, "_on_client_init")
 	
 	Multiplayer.connect("action_received", turn_engine, "_on_action_received")
 	
