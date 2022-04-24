@@ -154,6 +154,7 @@ func _on_game_event(event: Dictionary):
 				_add_player(id)
 		{"type": "player_left", "id": var id}:
 			if id != pid and remote_players.has(id):
+				remote_players[id].queue_free()
 				remote_players.erase(id)
 
 # Utility

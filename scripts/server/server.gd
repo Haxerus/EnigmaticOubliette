@@ -34,6 +34,7 @@ func _ready():
 	Multiplayer.connect("player_left", self, "_on_player_left")
 	
 	Multiplayer.connect("action_received", turn_engine, "_on_action_received")
+	Multiplayer.connect("player_left", turn_engine, "_on_player_left")
 	
 	print("[INFO] Starting server...")
 	
@@ -44,6 +45,10 @@ func _ready():
 	_init_starting_zone()
 	
 	$Timer.connect("timeout", self, "_debug_print")
+
+func _process(_delta):
+	if turn_engine.turn_is_ready():
+		turn_engine.execute_turn()
 
 func _init_starting_zone():
 	var generator = MapGenerator.new()

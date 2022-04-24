@@ -11,18 +11,12 @@ class_name TurnEngine
 var ready = []
 var actions = []
 
+var running = false
+
 # Run all actions in sequence
 func execute_turn():
+	running = true
 	var outcome = []
-	
-	var is_ready = true
-	
-	for i in GameData.players.keys():
-		if not ready.has(i):
-			is_ready = false
-	
-	if not is_ready:
-		return
 		
 	for action_obj in actions:
 		var movement = action_obj.movement
@@ -53,8 +47,18 @@ func execute_turn():
 	ready.clear()
 	actions.clear()
 	
-	GameData.sync_players()
 	Multiplayer.send_turn_outcome(outcome)
+	running = false
+
+func turn_is_ready():
+	if running:
+		return false
+	
+	for i in GameData.players.keys():
+		if not ready.has(i):
+			return false
+	
+	return true
 
 func _on_action_received(action: Dictionary):
 	if not ready.has(action.id):
@@ -63,4 +67,5 @@ func _on_action_received(action: Dictionary):
 	action.is_player = true
 	actions.append(action)
 	
-	execute_turn()
+func _on_player_left(id: int):
+	ready.erase(id)
