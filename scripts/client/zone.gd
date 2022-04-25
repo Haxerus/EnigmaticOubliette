@@ -1,4 +1,4 @@
-extends Node2D
+extends YSort
 
 func _ready():
 	$Map.cell_size = Utils.TILE_SIZE

@@ -8,7 +8,11 @@ enum {MOVE, BASIC, ACTION1, ACTION2, ACTION3, ACTION4}
 
 onready var pid = get_tree().get_network_unique_id()
 
+onready var player_data = GameData.players[pid].data
+onready var zone_data = GameData.zones.current
+
 var player_scene = preload("res://scenes/player.tscn")
+var attack_anim = preload("res://scenes/attack_animation.tscn")
 
 var ghost = player_scene.instance()
 var player = null
@@ -34,6 +38,7 @@ var action = {
 	"slot": null,
 }
 
+signal attack_anim_finished
 signal input_state_changed(new_state)
 
 func _debug_print():
@@ -63,7 +68,7 @@ func _ready():
 
 func _process(delta):
 	$HUDLayer/HUD/PlayerPos.text = str(Utils.pos_to_tile(player.position))
-	$HUDLayer/HUD/PlayerStoredPos.text = str(GameData.players[pid].data.position)
+	$HUDLayer/HUD/PlayerStoredPos.text = str(player_data.position)
 	
 	$HUDLayer/HUD/Movement.text = str(movement)
 	$HUDLayer/HUD/Action.text = str(action)
@@ -79,8 +84,8 @@ func _unhandled_input(event):
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			
 			var mouse_tile = Utils.pos_to_tile($Zone.get_global_mouse_position())
-			var mouse_tid = Utils.tile_id(mouse_tile, GameData.zones.current.map.size.x)
-			var valid_point = Utils.in_bounds(mouse_tile, GameData.zones.current.map.size) and GameData.zones.current.nav.has_point(mouse_tid)
+			var mouse_tid = Utils.tile_id(mouse_tile, zone_data.map.size.x)
+			var valid_point = Utils.in_bounds(mouse_tile, zone_data.map.size) and zone_data.nav.has_point(mouse_tid)
 			
 			if mouse_tid in overlay_tiles:
 				match input_state:
@@ -88,19 +93,19 @@ func _unhandled_input(event):
 						if valid_point and not animating:
 							movement.to = mouse_tid
 							planned_tile = mouse_tile
-							var path = GameData.zones.current.nav.get_point_path(
-									Utils.tile_id(GameData.players[pid].data.position,
-									GameData.zones.current.map.size.x
+							var path = zone_data.nav.get_point_path(
+									Utils.tile_id(player_data.position,
+									zone_data.map.size.x
 								), mouse_tid)
 							path.remove(0)
 							
 							$Zone/HighlightTile.position = Utils.tile_to_pos(mouse_tile)
 							$Zone/HighlightTile.show()
 							
-#							player.set_tile_position(GameData.players[pid].data.position)
+#							player.set_tile_position(player_data.position)
 #							player.move_path(path)
 							
-							ghost.set_tile_position(GameData.players[pid].data.position)
+							ghost.set_tile_position(player_data.position)
 							ghost.show()
 							ghost.move_path(path)
 							animating = true
@@ -144,6 +149,9 @@ func _on_outcome_received(outcome):
 				else:
 					remote_players[id].move_path(path)
 					yield(remote_players[id], "player_move_complete")
+			{"type": "attack_anim", "name": var anim_name, "target": var target}:
+				_create_and_play(anim_name, target)
+				yield(self, "attack_anim_finished")
 	
 	_update_input_state(NEUTRAL)
 	
@@ -166,7 +174,7 @@ func _update_input_state(new_state):
 			_reset_action()
 			
 			#camera.make_current()
-			#player.set_tile_position(GameData.players[pid].data.position)
+			#player.set_tile_position(player_data.position)
 			
 			planned_tile = null
 			ghost.hide()
@@ -178,25 +186,25 @@ func _update_input_state(new_state):
 			_reset_action()
 			
 			movement.from = Utils.tile_id(
-								GameData.players[pid].data.position,
-								GameData.zones.current.map.size.x
+								player_data.position,
+								zone_data.map.size.x
 							)
 			
 			ghost.hide()
 			planned_tile = null
 			
 #			camera.make_current()
-#			player.set_tile_position(GameData.players[pid].data.position)
+#			player.set_tile_position(player_data.position)
 			
-			_update_overlay_tiles(GameData.players[pid].data.movement)
+			_update_overlay_tiles(player_data.movement)
 			_show_overlay_tiles(1)
 		ACTION:
 			# Show player action tiles
-			_update_overlay_tiles(GameData.players[pid].data.attack_range)
+			_update_overlay_tiles(player_data.attack_range)
 			_show_overlay_tiles(2)
 		LOCKED:
 			_reset_action()
-			$Zone/Players.get_node(str(pid)).set_tile_position(GameData.players[pid].data.position)
+			player.set_tile_position(player_data.position)
 			planned_tile = null
 			ghost.hide()
 			$Zone/TileOverlay.hide()
@@ -223,21 +231,31 @@ func _add_player(id: int):
 		remote_players[id] = new_player
 	
 	$Zone/Players.add_child(new_player)
-	
+
+func _create_and_play(anim_name, target):
+	var anim = attack_anim.instance()
+	var tile = Utils.id_tile(target, zone_data.map.size.x)
+	anim.position = Utils.tile_to_pos(tile)
+	$Zone.add_child(anim)
+	anim.play(anim_name)
+	yield(anim, "animation_finished")
+	anim.queue_free()
+	emit_signal("attack_anim_finished")
+
 func _show_overlay_tiles(tile_type):
 	$Zone/TileOverlay.clear()
 	for t in overlay_tiles:
-		var t_pos = GameData.zones.current.nav.get_point_position(t)
+		var t_pos = zone_data.nav.get_point_position(t)
 		$Zone/TileOverlay.set_cellv(t_pos, tile_type)
 	$Zone/TileOverlay.show()
 
 func _update_overlay_tiles(dist):
-	var start = GameData.players[pid].data.position
+	var start = player_data.position
 	if planned_tile != null:
 		start = planned_tile
 	
-	var start_tid = Utils.tile_id(start, GameData.zones.current.map.size.x)
-	overlay_tiles = Utils.bfs_range(GameData.zones.current.nav, start_tid, dist)
+	var start_tid = Utils.tile_id(start, zone_data.map.size.x)
+	overlay_tiles = Utils.bfs_range(zone_data.nav, start_tid, dist)
 
 func _reset_action():
 	movement.from = null

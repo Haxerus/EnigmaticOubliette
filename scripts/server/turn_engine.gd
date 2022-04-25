@@ -41,8 +41,14 @@ func execute_turn():
 		
 		# then attacks	
 		if action.target != null and action.slot != null:
-			# add this later...
-			pass
+			if action_obj.is_player:
+				# TODO: Add attack logic
+				
+				outcome.append({
+					"type": "attack_anim",
+					"name": "slash",
+					"target": action.target,
+				})
 
 	ready.clear()
 	actions.clear()

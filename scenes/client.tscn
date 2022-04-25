@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://scripts/client/client.gd" type="Script" id=1]
 [ext_resource path="res://scenes/zone.tscn" type="PackedScene" id=2]
@@ -7,6 +7,14 @@
 [ext_resource path="res://assets/basic-attack.png" type="Texture" id=5]
 [ext_resource path="res://custom_theme.tres" type="Theme" id=6]
 [ext_resource path="res://assets/button_icon.png" type="Texture" id=7]
+
+[sub_resource type="StyleBoxEmpty" id=5]
+
+[sub_resource type="InputEventAction" id=6]
+action = "end_turn_shortcut"
+
+[sub_resource type="ShortCut" id=7]
+shortcut = SubResource( 6 )
 
 [sub_resource type="InputEventAction" id=1]
 action = "move_shortcut"
@@ -39,7 +47,9 @@ margin_left = -0.200073
 margin_top = -0.26001
 margin_right = 0.199951
 margin_bottom = -0.119995
+custom_styles/focus = SubResource( 5 )
 shortcut_in_tooltip = false
+shortcut = SubResource( 7 )
 icon = ExtResource( 7 )
 
 [node name="ActionButtonContainer" type="HBoxContainer" parent="HUDLayer/HUD"]

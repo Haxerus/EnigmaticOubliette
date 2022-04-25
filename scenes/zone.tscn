@@ -7,11 +7,8 @@
 [ext_resource path="res://custom_theme.tres" type="Theme" id=5]
 [ext_resource path="res://assets/planned_pos.png" type="Texture" id=6]
 
-[node name="Zone" type="Node2D"]
+[node name="Zone" type="YSort"]
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_horizontal_guides_": [  ]
-}
 
 [node name="Map" type="TileMap" parent="."]
 tile_set = ExtResource( 1 )
@@ -27,7 +24,7 @@ cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 cell_tile_origin = 1
 format = 1
 
-[node name="Interactables" type="Node2D" parent="."]
+[node name="Interactables" type="YSort" parent="."]
 
 [node name="HighlightTile" type="Sprite" parent="."]
 visible = false
@@ -53,6 +50,6 @@ __meta__ = {
 texture = ExtResource( 6 )
 offset = Vector2( 0, -8 )
 
-[node name="Players" type="Node2D" parent="."]
+[node name="Players" type="YSort" parent="."]
 
-[node name="Enemies" type="Node2D" parent="."]
+[node name="Enemies" type="YSort" parent="."]
