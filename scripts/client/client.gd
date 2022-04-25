@@ -170,7 +170,6 @@ func _on_outcome_received(outcome):
 			{"type": "enemy_hurt", "id": var id, "damage": var dmg}:
 				if enemies.has(id):
 					enemies[id].health -= dmg
-					yield(get_tree().create_timer(0.5), "timeout")
 	
 	Multiplayer.turn_complete()
 	_update_input_state(NEUTRAL)
