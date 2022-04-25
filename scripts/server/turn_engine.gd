@@ -17,6 +17,25 @@ var running = false
 func execute_turn():
 	running = true
 	var outcome = []
+	
+	for enemy in GameData.enemies.values():
+		var zone = GameData.zones[enemy.zone_id]
+		var e_act = {}
+		
+		e_act.movement = {
+			"from": Utils.tile_id(enemy.data.position, zone.map.size.x),
+			"to": _move_tile(enemy.data.position, 5, zone),
+		}
+		
+		e_act.action = {
+			"target": null,
+			"slot": null,
+		}
+		
+		e_act.id = enemy.id
+		e_act.is_player = false
+		
+		actions.append(e_act)
 		
 	for action_obj in actions:
 		var movement = action_obj.movement
@@ -35,6 +54,19 @@ func execute_turn():
 				
 				outcome.append({
 					"type": "player_move",
+					"id": id,
+					"path": path,
+				})
+			else:
+				var zone = GameData.zones[GameData.enemies[id].zone_id]
+				
+				GameData.update_enemy(id, {"position": Utils.id_tile(movement.to, zone.map.size.x)})
+				
+				var path = zone.nav.get_point_path(movement.from, movement.to)
+				path.remove(0)
+				
+				outcome.append({
+					"type": "enemy_move",
 					"id": id,
 					"path": path,
 				})
@@ -57,6 +89,9 @@ func execute_turn():
 	running = false
 
 func turn_is_ready():
+	if GameData.players.empty():
+		return false
+	
 	if running:
 		return false
 	
@@ -75,3 +110,10 @@ func _on_action_received(action: Dictionary):
 	
 func _on_player_left(id: int):
 	ready.erase(id)
+
+# REMOVE LATER
+func _move_tile(start, dist, zone):
+	var start_tid = Utils.tile_id(start, zone.map.size.x)
+	var tiles = Utils.bfs_range(zone.nav, start_tid, dist)
+	var i = randi() % len(tiles)
+	return tiles[i]

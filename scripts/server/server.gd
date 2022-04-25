@@ -1,12 +1,30 @@
 extends Node
 
+var random = RandomNumberGenerator.new()
 var turn_engine = TurnEngine.new()
 
 func spawn_enemy():
-	pass
+	var size = GameData.zones[0].map.size
+	var spawn_point = Vector2(randi() % int(size.x + 1) + 1, randi() % int(size.y + 1) + 1)
+	spawn_point = Vector2(12, 12)
+	var id = GameData.add_enemy(0)
+	GameData.update_enemy(id, {"position": spawn_point})
+	Multiplayer.send_game_event({
+		"type": "enemy_spawned",
+		"id": id,
+	})
+	
+func remove_dead_enemies():
+	for enemy in GameData.enemies.values():
+		if enemy.data.health <= 0:
+			GameData.remove_enemy(enemy.id)
+			Multiplayer.send_game_event({
+				"type": "enemy_removed",
+				"id": enemy.id,
+			})
 
 func _on_player_joined(id: int):
-	GameData.send_existing_players(id)
+	GameData.send_existing_entities(id)
 	GameData.add_player(id)
 	GameData.add_player_to_zone(id, 0)
 	GameData.update_player(id, {"position": GameData.zones[0].map.size / 2})
@@ -29,6 +47,8 @@ func _debug_print():
 	pass
 
 func _ready():
+	random.randomize()
+	
 	Multiplayer.connect("upnp_completed", self, "_on_upnp_completed")
 	Multiplayer.connect("player_joined", self, "_on_player_joined")
 	Multiplayer.connect("player_left", self, "_on_player_left")
@@ -49,6 +69,13 @@ func _ready():
 func _process(_delta):
 	if turn_engine.turn_is_ready():
 		turn_engine.execute_turn()
+		
+		# properly handle this later
+		#if random.randf() < 0.5:
+		if GameData.enemies.empty():
+			spawn_enemy()
+		
+		remove_dead_enemies()
 
 func _init_starting_zone():
 	var generator = MapGenerator.new()

@@ -9,17 +9,16 @@ texture = ExtResource( 1 )
 offset = Vector2( 0, -10 )
 script = ExtResource( 3 )
 
-[node name="Label" type="Label" parent="."]
-visible = false
+[node name="Nametag" type="Label" parent="."]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -33.0
-margin_top = -14.0
-margin_right = 294.0
-margin_bottom = 17.0
-rect_scale = Vector2( 0.15, 0.15 )
+margin_left = -42.0
+margin_top = 4.0
+margin_right = 11.0
+margin_bottom = 18.0
+grow_horizontal = 2
 theme = ExtResource( 2 )
-text = "ok why doesn this work"
+text = "amon gus"
 align = 1
 valign = 1
 

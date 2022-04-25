@@ -31,6 +31,13 @@ signal game_event(event)
 # Game specific network functions
 
 # Server Side
+remote func recv_client_config(config: Dictionary):
+	if get_tree().is_network_server():
+		match config:
+			{"name": var p_name}:
+				var id = get_tree().get_rpc_sender_id()
+				GameData.update_player(id, {"name": p_name})
+
 remote func recv_client_action(action: Dictionary):
 	if get_tree().is_network_server():
 		emit_signal("action_received", action)
@@ -66,6 +73,10 @@ remote func dispatch_game_event(event: Dictionary):
 func send_action(action: Dictionary):
 	if not get_tree().is_network_server():
 		rpc_id(1, "recv_client_action", action)
+		
+func send_client_config(config: Dictionary):
+	if not get_tree().is_network_server():
+		rpc_id(1, "recv_client_config", config)
 
 # General Multiplayer Functions
 

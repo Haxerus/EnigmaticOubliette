@@ -13,11 +13,13 @@ onready var zone_data = GameData.zones.current
 
 var player_scene = preload("res://scenes/player.tscn")
 var attack_anim = preload("res://scenes/attack_animation.tscn")
+var enemy_scene = preload("res://scenes/enemy.tscn")
 
 var ghost = player_scene.instance()
 var player = null
 
 var remote_players = {}
+var enemies = {}
 
 var planned_tile = null
 var animating = false
@@ -52,6 +54,9 @@ func _ready():
 	for id in GameData.players:
 		_add_player(id)
 	
+	for id in GameData.enemies:
+		_add_enemy(id)
+	
 	player.get_node("Camera").make_current()
 	
 	ghost.modulate = Color(1, 1, 1, 0.5)
@@ -72,7 +77,13 @@ func _process(delta):
 	
 	$HUDLayer/HUD/Movement.text = str(movement)
 	$HUDLayer/HUD/Action.text = str(action)
-
+	
+	player.get_node("Nametag").text = player_data.name
+	
+	for p in remote_players:
+		var id = int(remote_players[p].name)
+		remote_players[p].get_node("Nametag").text = GameData.players[id].data.name
+	
 # HUD functions
 func _unhandled_input(event):
 	if event is InputEventKey:
@@ -152,6 +163,9 @@ func _on_outcome_received(outcome):
 			{"type": "attack_anim", "name": var anim_name, "target": var target}:
 				_create_and_play(anim_name, target)
 				yield(self, "attack_anim_finished")
+			{"type": "enemy_move", "id": var id, "path": var path}:
+				enemies[id].move_path(path)
+				yield(enemies[id], "enemy_move_complete")
 	
 	_update_input_state(NEUTRAL)
 	
@@ -164,6 +178,12 @@ func _on_game_event(event: Dictionary):
 			if id != pid and remote_players.has(id):
 				remote_players[id].queue_free()
 				remote_players.erase(id)
+		{"type": "enemy_spawned", "id": var id}:
+			_add_enemy(id)
+		{"type": "enemy_removed", "id": var id}:
+			if enemies.has(id):
+				enemies[id].queue_free()
+				enemies.erase(id)
 
 # Utility
 func _update_input_state(new_state):
@@ -172,10 +192,6 @@ func _update_input_state(new_state):
 	match new_state:
 		NEUTRAL:
 			_reset_action()
-			
-			#camera.make_current()
-			#player.set_tile_position(player_data.position)
-			
 			planned_tile = null
 			ghost.hide()
 			$Zone/TileOverlay.hide()
@@ -192,9 +208,6 @@ func _update_input_state(new_state):
 			
 			ghost.hide()
 			planned_tile = null
-			
-#			camera.make_current()
-#			player.set_tile_position(player_data.position)
 			
 			_update_overlay_tiles(player_data.movement)
 			_show_overlay_tiles(1)
@@ -231,6 +244,15 @@ func _add_player(id: int):
 		remote_players[id] = new_player
 	
 	$Zone/Players.add_child(new_player)
+	
+func _add_enemy(id: int):
+	var enemy = enemy_scene.instance()
+	enemy.name = str(id)
+	enemy.set_tile_position(GameData.enemies[id].data.position)
+	enemy.max_health = GameData.enemies[id].data.max_health
+	enemy.health = GameData.enemies[id].data.health
+	enemies[id] = enemy
+	$Zone/Enemies.add_child(enemy)
 
 func _create_and_play(anim_name, target):
 	var anim = attack_anim.instance()

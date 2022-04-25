@@ -16,6 +16,15 @@ puppet func load_player(data: Dictionary):
 	
 	players[data.id] = player
 	
+puppet func load_enemy(data: Dictionary):
+	if enemies.has(data.id):
+		return
+	
+	var enemy = EnemyData.new()
+	enemy.data = data.data
+	
+	enemies[data.id] = enemy
+	
 puppet func load_zone(data: Dictionary):	
 	var zone = ZoneData.new()
 	var map = MapData.new()
@@ -37,7 +46,6 @@ puppet func player_changed_zone(id: int, zid: int):
 		zones.current.add_player(id)
 	else:
 		zones.current.remove_player(id)
-
 
 remote func add_player(id: int):
 	players[id] = PlayerData.new(id, -1)
@@ -73,10 +81,13 @@ func add_player_to_zone(pid: int, zid: int):
 	rpc_id(pid, "load_zone", zones[zid].serialize())
 	rpc("player_changed_zone", pid, zid)
 
-func send_existing_players(receiver):
+func send_existing_entities(receiver):
 	for player in players.values():
 		if player.id != receiver:
 			rpc_id(receiver, "load_player", player.serialize())
+	
+	for enemy in enemies.values():
+		rpc_id(receiver, "load_enemy", enemy.serialize())
 
 func sync_players():
 	var packet = []
@@ -96,3 +107,37 @@ func remove_zone(id: int):
 
 func set_zone_map(id: int, map: MapData):
 	zones[id].map = map
+
+remote func add_enemy(zid: int, eid: int = -1):
+	var enemy = EnemyData.new()
+	if eid != -1:
+		enemy.id = eid
+	enemy.zone_id = zid
+	enemies[enemy.id] = enemy
+	
+	if get_tree().is_network_server():
+		rpc("add_enemy", zid, enemy.id)
+		zones[zid].add_enemy(enemy.id)
+	else:
+		if zones.current.id == zid:
+			zones.current.add_enemy(enemy.id)
+			
+	return enemy.id
+			
+remote func remove_enemy(id: int):
+	if get_tree().is_network_server():
+		var zid = enemies[id].zone_id
+		zones[zid].remove_enemy(id)
+		enemies.erase(id)
+	
+		rpc("remove_enemy", id)
+	else:
+		zones.current.remove_enemy(id)
+		enemies.erase(id)
+		
+remote func update_enemy(id: int, data: Dictionary):
+	for key in data.keys():
+		enemies[id].data[key] = data[key]
+		
+	if get_tree().is_network_server():
+		rpc("update_enemy", id, data)
