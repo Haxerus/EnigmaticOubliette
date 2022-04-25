@@ -164,9 +164,15 @@ func _on_outcome_received(outcome):
 				_create_and_play(anim_name, target)
 				yield(self, "attack_anim_finished")
 			{"type": "enemy_move", "id": var id, "path": var path}:
-				enemies[id].move_path(path)
-				yield(enemies[id], "enemy_move_complete")
+				if enemies.has(id):
+					enemies[id].move_path(path)
+					yield(enemies[id], "enemy_move_complete")
+			{"type": "enemy_hurt", "id": var id, "damage": var dmg}:
+				if enemies.has(id):
+					enemies[id].health -= dmg
+					yield(get_tree().create_timer(0.5), "timeout")
 	
+	Multiplayer.turn_complete()
 	_update_input_state(NEUTRAL)
 	
 func _on_game_event(event: Dictionary):

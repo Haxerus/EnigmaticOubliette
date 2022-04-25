@@ -5,8 +5,8 @@ var turn_engine = TurnEngine.new()
 
 func spawn_enemy():
 	var size = GameData.zones[0].map.size
-	var spawn_point = Vector2(randi() % int(size.x + 1) + 1, randi() % int(size.y + 1) + 1)
-	spawn_point = Vector2(12, 12)
+	var spawn_point = Vector2(randi() % int(size.x - 1) + 1, randi() % int(size.y - 1) + 1)
+	#spawn_point = Vector2(12, 12)
 	var id = GameData.add_enemy(0)
 	GameData.update_enemy(id, {"position": spawn_point})
 	Multiplayer.send_game_event({
@@ -54,6 +54,7 @@ func _ready():
 	Multiplayer.connect("player_left", self, "_on_player_left")
 	
 	Multiplayer.connect("action_received", turn_engine, "_on_action_received")
+	
 	Multiplayer.connect("player_left", turn_engine, "_on_player_left")
 	
 	print("[INFO] Starting server...")
@@ -69,13 +70,14 @@ func _ready():
 func _process(_delta):
 	if turn_engine.turn_is_ready():
 		turn_engine.execute_turn()
-		
-		# properly handle this later
-		#if random.randf() < 0.5:
-		if GameData.enemies.empty():
-			spawn_enemy()
-		
-		remove_dead_enemies()
+		yield(Multiplayer, "client_turn_complete")
+		next_turn()
+
+func next_turn():
+	remove_dead_enemies()
+	
+	if randf() < 0.55:
+		spawn_enemy()	
 
 func _init_starting_zone():
 	var generator = MapGenerator.new()

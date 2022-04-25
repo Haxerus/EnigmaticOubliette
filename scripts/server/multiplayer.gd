@@ -6,6 +6,8 @@ const MAX_PEERS = 8
 var peer
 var upnp_thread
 
+var clients = []
+
 signal connection_succeeded
 signal connection_failed
 signal network_error(error)
@@ -18,6 +20,8 @@ signal player_left(id)
 
 signal action_received(action)
 signal outcome_received(outcome)
+
+signal client_turn_complete
 
 # Client Only
 signal client_ready
@@ -41,7 +45,20 @@ remote func recv_client_config(config: Dictionary):
 remote func recv_client_action(action: Dictionary):
 	if get_tree().is_network_server():
 		emit_signal("action_received", action)
-	
+
+remote func client_turn_process_complete():
+	if get_tree().is_network_server():
+		clients.append(get_tree().get_rpc_sender_id())
+		
+		var ready = true
+		for i in GameData.players.keys():
+			if not clients.has(i):
+				ready = false
+		
+		if ready:
+			clients.clear()
+			emit_signal("client_turn_complete")
+
 func enable_client(id):
 	if get_tree().is_network_server():
 		rpc_id(id, "setup_end")
@@ -77,6 +94,10 @@ func send_action(action: Dictionary):
 func send_client_config(config: Dictionary):
 	if not get_tree().is_network_server():
 		rpc_id(1, "recv_client_config", config)
+		
+func turn_complete():
+	if not get_tree().is_network_server():
+		rpc_id(1, "client_turn_process_complete")
 
 # General Multiplayer Functions
 

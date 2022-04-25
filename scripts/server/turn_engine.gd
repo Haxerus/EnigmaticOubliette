@@ -13,6 +13,8 @@ var actions = []
 
 var running = false
 
+signal turn_completed
+
 # Run all actions in sequence
 func execute_turn():
 	running = true
@@ -24,7 +26,7 @@ func execute_turn():
 		
 		e_act.movement = {
 			"from": Utils.tile_id(enemy.data.position, zone.map.size.x),
-			"to": _move_tile(enemy.data.position, 5, zone),
+			"to": _move_tile(enemy.data.position, 2, zone),
 		}
 		
 		e_act.action = {
@@ -58,35 +60,49 @@ func execute_turn():
 					"path": path,
 				})
 			else:
-				var zone = GameData.zones[GameData.enemies[id].zone_id]
-				
-				GameData.update_enemy(id, {"position": Utils.id_tile(movement.to, zone.map.size.x)})
-				
-				var path = zone.nav.get_point_path(movement.from, movement.to)
-				path.remove(0)
-				
-				outcome.append({
-					"type": "enemy_move",
-					"id": id,
-					"path": path,
-				})
+				if not GameData.enemies[id].data.health <= 0:
+					var zone = GameData.zones[GameData.enemies[id].zone_id]
+					
+					GameData.update_enemy(id, {"position": Utils.id_tile(movement.to, zone.map.size.x)})
+					
+					var path = zone.nav.get_point_path(movement.from, movement.to)
+					path.remove(0)
+					
+					outcome.append({
+						"type": "enemy_move",
+						"id": id,
+						"path": path,
+					})
 		
 		# then attacks	
 		if action.target != null and action.slot != null:
 			if action_obj.is_player:
-				# TODO: Add attack logic
+				var zone = GameData.zones[GameData.players[id].zone_id]
+				var target_tile = Utils.id_tile(action.target, zone.map.size.x)
 				
 				outcome.append({
 					"type": "attack_anim",
 					"name": "slash",
 					"target": action.target,
 				})
+				
+				# TODO: Add attack logic
+				for enemy in GameData.enemies.values():
+					var dmg = 9
+					if enemy.data.position == target_tile:
+						enemy.data.health -= dmg
+						outcome.append({
+							"type": "enemy_hurt",
+							"id": enemy.id,
+							"damage": dmg,
+						})
 
 	ready.clear()
 	actions.clear()
 	
 	Multiplayer.send_turn_outcome(outcome)
 	running = false
+	emit_signal("turn_completed")
 
 func turn_is_ready():
 	if GameData.players.empty():

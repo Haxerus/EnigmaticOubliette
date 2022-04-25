@@ -34,4 +34,7 @@ func _move_to_tile(target_tile: Vector2):
 
 func _health_changed(new_value):
 	health = new_value
-	$HealthBar.rect_scale.x = health / max_health
+	if health < 0:
+		hide()
+		health = 0
+	$HealthBar.rect_scale.x = float(health) / float(max_health)
