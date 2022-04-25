@@ -1,6 +1,6 @@
 extends Sprite
 
-export var anim_speed = 1 / 32.0
+export var anim_speed = 1 / 16.0
 
 var max_health
 var health setget _health_changed

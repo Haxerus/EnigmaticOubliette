@@ -156,17 +156,17 @@ func _on_outcome_received(outcome):
 				if id == pid:
 					# Local player
 					player.move_path(path)
-					yield(player, "player_move_complete")
+					#yield(player, "player_move_complete")
 				else:
 					remote_players[id].move_path(path)
-					yield(remote_players[id], "player_move_complete")
+					#yield(remote_players[id], "player_move_complete")
 			{"type": "attack_anim", "name": var anim_name, "target": var target}:
 				_create_and_play(anim_name, target)
 				yield(self, "attack_anim_finished")
 			{"type": "enemy_move", "id": var id, "path": var path}:
 				if enemies.has(id):
 					enemies[id].move_path(path)
-					yield(enemies[id], "enemy_move_complete")
+					#yield(enemies[id], "enemy_move_complete")
 			{"type": "enemy_hurt", "id": var id, "damage": var dmg}:
 				if enemies.has(id):
 					enemies[id].health -= dmg

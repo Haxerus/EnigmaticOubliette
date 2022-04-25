@@ -1,6 +1,6 @@
 extends Sprite
 
-export var anim_speed = 1 / 32.0
+export var anim_speed = 1 / 16.0
 
 signal player_move_complete
 
